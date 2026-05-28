@@ -1,4 +1,4 @@
-package ProjetoDePoo;
+package models;
 
 public abstract class Membro extends Usuario{
     // ATRIBUTOS

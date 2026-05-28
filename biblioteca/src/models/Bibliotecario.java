@@ -1,4 +1,4 @@
-package ProjetoDePoo;
+package models;
 
 public class Bibliotecario extends Usuario{
     // ATRIBUTOS

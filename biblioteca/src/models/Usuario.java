@@ -1,4 +1,4 @@
-package ProjetoDePoo;
+package models;
 
 //+ criarUsuario(nome:String, cpf:String, login:String, senha:String) : Usuario
 //+ editarUsuario(usuario:Usuario, nome:String, cpf:String, login:String, senha:String, ativo:boolean) : void
@@ -23,6 +23,7 @@ public class Usuario {
         this.ativo = ativo;
     }
 
+    
     // METODOS
     public void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo) {
         this.nome = nome;
