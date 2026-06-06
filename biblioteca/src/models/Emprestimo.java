@@ -1,7 +1,6 @@
 package models;
 
 import java.util.Date;
-import java.util.List;
 
 public class Emprestimo {
     // ATRIBUTOS
@@ -15,46 +14,62 @@ public class Emprestimo {
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucaoPrevista = dataDevolucaoPrevista;
         this.dataDevolucaoReal = dataDevolucaoReal;
-        this.devolvido = devolvido;
+        this.devolvido = false;
     }
 
     // METODOS
-//    public editarEmprestimo(Emprestimo emprestimo, Livro livro, Membro membro, Date dataEmprestimo, Date dataDevolucaoPrevista, Date dataDevolucaoReal, boolean devolvido) {
-//        this.dataEmprestimo = dataEmprestimo;
-//        this.dataDevolucaoPrevista = dataDevolucaoPrevista;
-//        this.dataDevolucaoReal = dataDevolucaoReal;
-//        this.devolvido = devolvido;
-//    }
+    public static Emprestimo criaEmprestimo(Livro livro, Membro membro){
+        return criaEmprestimo(livro, membro);
+    }
+
+   public Date getDataEmprestimo() {
+        return dataEmprestimo;
+    }
+
+    public void setDataEmprestimo(Date dataEmprestimo) {
+        this.dataEmprestimo = dataEmprestimo;
+    }
+
+    public Date getDataDevolucaoPrevista() {
+        return dataDevolucaoPrevista;
+    }
+
+    public void setDataDevolucaoPrevista(Date dataDevolucaoPrevista) {
+        this.dataDevolucaoPrevista = dataDevolucaoPrevista;
+    }
+
+    public Date getDataDevolucaoReal() {
+        return dataDevolucaoReal;
+    }
+
+    public void setDataDevolucaoReal(Date dataDevolucaoReal) {
+        this.dataDevolucaoReal = dataDevolucaoReal;
+    }
+
+    public boolean isDevolvido() {
+        return devolvido;
+    }
+
+    public void setDevolvido(boolean devolvido) {
+        this.devolvido = devolvido;
+    }
+
+   public static void editarEmprestimo(Emprestimo emprestimo, Livro livro, Membro membro, Date dataEmprestimo, Date dataDevolucaoPrevista, Date dataDevolucaoReal, boolean devolvido) {
+       emprestimo.setDataDevolucaoPrevista(dataDevolucaoPrevista);
+       emprestimo.setDataDevolucaoReal(dataDevolucaoReal);
+       emprestimo.setDataEmprestimo(dataEmprestimo);
+       emprestimo.setDevolvido(devolvido);
+   }
 
     public void excluirEmprestimo(Emprestimo emprestimo){
-        // remover
+        //banco de dados
     }
 
     public void registrarDevolucao(){
         this.devolvido = true;
     }
 
-//    public float calcularMulta(){
-//        return (dataDevolucaoReal - dataDevolucaoPrevista);
-//    }
-
-//    public List<Emprestimo> listarEmprestimos(){
-//
-//    }
-
-//    public List<Emprestimo> listarEmprestimosAtrasados(){
-//
-//    }
-
-//    public List<Emprestimo> listarEmprestimosAtrasadosPorMembro(Membro membro){
-//
-//    }
-
-//    public List<Emprestimo> listarEmprestimosAtivos(){
-//
-//    }
-
-//    public List<Emprestimo> listarEmprestimosAtivosPorMembro(Membro membro){
-//
-//    }
+    public int calcularMulta(){
+        return (int) (dataDevolucaoReal.getTime() - dataDevolucaoPrevista.getTime());
+    }
 }
