@@ -31,7 +31,7 @@ public class LoginView extends javax.swing.JFrame {
      */
 
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         lblTitulo = new javax.swing.JLabel();
@@ -45,7 +45,7 @@ public class LoginView extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(420, 520));
 
-        lblTitulo.setFont(new java.awt.Font("Segoe UI Black", 1, 24)); // NOI18N
+        lblTitulo.setFont(new java.awt.Font("Adwaita Mono", 1, 24)); // NOI18N
         lblTitulo.setText("Biblioteca");
 
         lblLogin.setText("Login");
@@ -55,6 +55,7 @@ public class LoginView extends javax.swing.JFrame {
         lblSenha.setText("Senha");
 
         btnEntrar.setText("Entrar");
+        btnEntrar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnEntrar.addActionListener(this::btnEntrarActionPerformed);
 
         campoSenha.addActionListener(this::campoSenhaActionPerformed);
@@ -62,46 +63,41 @@ public class LoginView extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(86, 86, 86)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(lblTitulo)
-                                        .addComponent(lblLogin)
-                                        .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 240,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblSenha)
-                                        .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 165,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 240,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblErro))
-                                .addContainerGap(94, Short.MAX_VALUE)));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(86, 86, 86)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lblTitulo)
+                    .addComponent(lblLogin)
+                    .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSenha)
+                    .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblErro))
+                .addContainerGap(94, Short.MAX_VALUE))
+        );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL,
-                new java.awt.Component[] { btnEntrar, campoLogin, campoSenha });
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnEntrar, campoLogin, campoSenha});
 
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addComponent(lblTitulo)
-                                .addGap(53, 53, 53)
-                                .addComponent(lblLogin)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(lblSenha)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(btnEntrar)
-                                .addGap(46, 46, 46)
-                                .addComponent(lblErro, javax.swing.GroupLayout.PREFERRED_SIZE, 17,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(88, Short.MAX_VALUE)));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(lblTitulo)
+                .addGap(53, 53, 53)
+                .addComponent(lblLogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblSenha)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(btnEntrar)
+                .addGap(46, 46, 46)
+                .addComponent(lblErro, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(92, Short.MAX_VALUE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
