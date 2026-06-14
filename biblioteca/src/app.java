@@ -1,11 +1,11 @@
-package models;
-
 import java.util.Scanner;
 
-public class DemoBiblioteca {
+import models.Emprestimo;
+
+public class app {
     public static void main(String[] args) {
         Scanner entrada = new Scanner(System.in);
-
-        entrada.close();
+        
+        Emprestimo livro1 = Emprestimo.criaEmprestimo(null, null);
     }
 }
