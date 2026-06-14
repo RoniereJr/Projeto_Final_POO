@@ -1,14 +1,17 @@
 package models;
 
+import dao.UsuarioDAO;
+import java.sql.SQLException;
+import java.util.List;
+
 public abstract class Usuario {
-    // ATRIBUTOS
+
     private String nome;
     private String cpf;
     private String login;
     private String senha;
     private boolean ativo;
 
-    // CONSTRUTOR
     public Usuario(String nome, String cpf, String login, String senha, boolean ativo) {
         this.nome = nome;
         this.cpf = cpf;
@@ -57,26 +60,49 @@ public abstract class Usuario {
         this.ativo = ativo;
     }
 
-    public static void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo) {
-        usuario.setNome(nome);
-        usuario.setCpf(cpf);
-        usuario.setLogin(login);
-        usuario.setSenha(senha);
-        usuario.setAtivo(ativo);
+    public void verUsuario() {
+        System.out.println("Nome: " + nome + " | CPF: " + cpf +
+                " | Login: " + login + " | Ativo: " + ativo);
     }
 
-    public void desativarUsuario(Usuario usuario){
-        // banco de dados
+    public static void editarUsuario(Usuario usuario, String nome, String cpf,
+            String login, String senha, boolean ativo) {
+        try {
+            new UsuarioDAO().editarUsuario(usuario, nome, cpf, login, senha, ativo);
+            usuario.setNome(nome);
+            usuario.setCpf(cpf);
+            usuario.setLogin(login);
+            usuario.setSenha(senha);
+            usuario.setAtivo(ativo);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public boolean autenticar(String login, String senha){
-        if( (this.login.equals(login)) && (this.senha.equals(senha)) ){
-            return true;
-        } else{
+    public static void desativarUsuario(Usuario usuario) {
+        try {
+            new UsuarioDAO().desativarUsuario(usuario);
+            usuario.setAtivo(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean autenticar(String login, String senha) {
+        try {
+            return new UsuarioDAO().autenticar(login, senha);
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
 
-    public void verUsuario() {
+    public static List<Usuario> listarUsuarios() {
+        try {
+            return new UsuarioDAO().listarUsuarios();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return List.of();
+        }
     }
 }

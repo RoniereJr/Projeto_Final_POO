@@ -1,7 +1,11 @@
 package models;
 
+import dao.LivroDAO;
+import java.sql.SQLException;
+import java.util.List;
+
 public class Livro {
-    // ATRIBUTOS
+
     private String isbn;
     private String titulo;
     private String autor;
@@ -9,7 +13,6 @@ public class Livro {
     private int numeroCopias;
     private int disponiveis;
 
-    // CONSTRUTOR
     public Livro(String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias, int disponiveis) {
         this.isbn = isbn;
         this.titulo = titulo;
@@ -17,11 +20,6 @@ public class Livro {
         this.anoPublicacao = anoPublicacao;
         this.numeroCopias = numeroCopias;
         this.disponiveis = disponiveis;
-    }
-
-    // METODOS
-    public static Livro criarLivro(String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias, int disponiveis){
-        return new Livro(isbn, titulo, autor, anoPublicacao, numeroCopias, disponiveis);
     }
 
     public String getIsbn() {
@@ -72,24 +70,69 @@ public class Livro {
         this.disponiveis = disponiveis;
     }
 
-    public static void editarLivro(Livro livro, String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias, int disponiveis) {
-        livro.setIsbn(isbn);
-        livro.setTitulo(titulo);
-        livro.setAutor(autor);
-        livro.setAnoPublicacao(anoPublicacao);
-        livro.setNumeroCopias(numeroCopias);
-        livro.setDisponiveis(disponiveis);   
+    public void verLivro() {
+        System.out.println("ISBN: " + isbn + " | Titulo: " + titulo + " | Autor: " + autor +
+                " | Ano: " + anoPublicacao + " | Copias: " + numeroCopias +
+                " | Disponiveis: " + disponiveis);
     }
 
-    public void excluirLivro(Livro livro){
-        // banco de dados
+    public void adicionarCopias(int quantidade) {
+        this.numeroCopias += quantidade;
+        this.disponiveis += quantidade;
+        try {
+            new LivroDAO().adicionarCopias(this, quantidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void adiconarCopias(int numeroCopias){
-        this.numeroCopias += numeroCopias;
+    public void removerCopias(int quantidade) {
+        if (quantidade > 0 && quantidade <= this.numeroCopias) {
+            this.numeroCopias -= quantidade;
+            if (this.disponiveis > quantidade)
+                this.disponiveis -= quantidade;
+            else
+                this.disponiveis = 0;
+            try {
+                new LivroDAO().removerCopias(this, quantidade);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void removerCopias(int numeroCopias){
-        this.numeroCopias -= numeroCopias;
+    public static Livro criarLivro(String isbn, String titulo, String autor, int anoPublicacao, int numeroCopias) {
+        try {
+            return new LivroDAO().criarLivro(isbn, titulo, autor, anoPublicacao, numeroCopias, numeroCopias);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void editarLivro(String isbn, String titulo, String autor,
+            int anoPublicacao, int numeroCopias, int disponiveis) {
+        try {
+            new LivroDAO().editarLivro(isbn, titulo, autor, anoPublicacao, numeroCopias, disponiveis);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void excluirLivro(Livro livro) {
+        try {
+            new LivroDAO().excluirLivro(livro);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Livro> listarLivros() {
+        try {
+            return new LivroDAO().listarLivros();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return List.of();
+        }
     }
 }
