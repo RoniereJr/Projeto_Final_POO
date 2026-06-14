@@ -8,7 +8,7 @@ package views;
  *
  * @author ronierejr
  */
-public class AreaMembroView extends javax.swing.JFrame {
+public class AreaMembroView extends javax.swing.JPanel {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AreaMembroView.class.getName());
 
@@ -38,18 +38,18 @@ public class AreaMembroView extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tabelaMeusEmprestimos = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1100, 680));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel1.setLayout(new java.awt.FlowLayout(1, 40, 30));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         lblNomeMembro.setFont(new java.awt.Font("Adwaita Mono", 1, 24)); // NOI18N
         lblNomeMembro.setText("Bem-vindo(a)");
-        jPanel1.add(lblNomeMembro);
-        jPanel1.add(lblStatusSuspensao);
+        jPanel1.add(lblNomeMembro, java.awt.BorderLayout.CENTER);
+        jPanel1.add(lblStatusSuspensao, java.awt.BorderLayout.PAGE_END);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setLayout(new java.awt.CardLayout(100, 20));
 
@@ -85,9 +85,7 @@ public class AreaMembroView extends javax.swing.JFrame {
 
         jPanel2.add(abasMembro, "card2");
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
-
-        pack();
+        add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     /**

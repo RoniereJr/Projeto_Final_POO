@@ -4,11 +4,18 @@
  */
 package views;
 
+import java.awt.CardLayout;
 /**
  *
  * @author ronierejr
  */
 public class MainView extends javax.swing.JFrame {
+    
+    private LivroView livroView = new LivroView();
+    private MembroView membroView = new MembroView();
+    private BibliotecarioView bibliotecarioView = new BibliotecarioView();
+    private EmprestimoView emprestimoView = new EmprestimoView();
+    private AreaMembroView areaMembroView = new AreaMembroView();
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainView.class.getName());
 
@@ -17,6 +24,75 @@ public class MainView extends javax.swing.JFrame {
      */
     public MainView() {
         initComponents();
+        iniciarNavegacao();
+        estilizarSidebar();
+    }
+    
+    private void iniciarNavegacao() {
+        painelConteudo.add(livroView, "livros");
+        painelConteudo.add(membroView, "membros");
+        painelConteudo.add(bibliotecarioView, "bibliotecarios");
+        painelConteudo.add(emprestimoView, "emprestimos");
+        painelConteudo.add(areaMembroView, "membro");
+
+        CardLayout card = (CardLayout) painelConteudo.getLayout();
+
+        btnLivros.addActionListener(e -> card.show(painelConteudo, "livros"));
+        btnMembros.addActionListener(e -> card.show(painelConteudo, "membros"));
+        btnBibliotecarios.addActionListener(e -> card.show(painelConteudo, "bibliotecarios"));
+        btnEmprestimos.addActionListener(e -> card.show(painelConteudo, "emprestimos"));
+
+        btnSair.addActionListener(e -> {
+            new LoginView().setVisible(true);
+            dispose();
+        });
+
+        card.show(painelConteudo, "livros");
+    }
+    
+    public void configurarUsuario(String nome, String cargo) {
+        lblNomeUsuario.setText(nome);
+        lblCargo.setText(cargo);
+
+        btnBibliotecarios.setVisible("SUPERVISOR".equalsIgnoreCase(cargo));
+    }
+    
+    private void estilizarSidebar() {
+    
+    painelSidebar.setPreferredSize(new java.awt.Dimension(160, 0));
+    painelSidebar.setBackground(new java.awt.Color(26, 26, 46));
+    lblNomeUsuario.setForeground(java.awt.Color.WHITE);
+    lblNomeUsuario.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
+    lblCargo.setForeground(new java.awt.Color(160, 174, 192));
+    lblCargo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
+
+    estilizarBotaoNav(btnMembros);
+    estilizarBotaoNav(btnBibliotecarios);
+    estilizarBotaoNav(btnEmprestimos);
+    estilizarBotaoNav(btnLivros);
+
+    estilizarBotaoNav(btnSair);
+    btnSair.setForeground(new java.awt.Color(252, 129, 129));
+}
+
+    private void estilizarBotaoNav(javax.swing.JButton btn) {
+        btn.setBackground(new java.awt.Color(26, 26, 46));
+        btn.setForeground(new java.awt.Color(203, 213, 224));
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setForeground(java.awt.Color.WHITE);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setForeground(new java.awt.Color(203, 213, 224));
+            }
+        });
     }
 
     /**
@@ -129,6 +205,7 @@ public class MainView extends javax.swing.JFrame {
 
         getContentPane().add(painelSidebar, java.awt.BorderLayout.WEST);
 
+        painelConteudo.setLayout(new java.awt.CardLayout());
         getContentPane().add(painelConteudo, java.awt.BorderLayout.CENTER);
 
         pack();

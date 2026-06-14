@@ -4,11 +4,23 @@
  */
 package views;
 
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 /**
  *
  * @author ronierejr
  */
-public class EmprestimoView extends javax.swing.JFrame {
+public class EmprestimoView extends javax.swing.JPanel {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EmprestimoView.class.getName());
 
@@ -17,6 +29,46 @@ public class EmprestimoView extends javax.swing.JFrame {
      */
     public EmprestimoView() {
         initComponents();
+        estilizarCabecalho();
+        estilizarPagina();
+    }
+
+    private void estilizarPagina() {
+        setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel2.setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel3.setBackground(new java.awt.Color(247, 248, 250));
+
+        estilizarBotao(btnDevolver, new java.awt.Color(46, 196, 182));
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(
+            new java.awt.Color(229, 231, 235)
+        ));
+
+        tabelaEmprestimos.getTableHeader().setBackground(new java.awt.Color(26, 26, 46));
+        tabelaEmprestimos.getTableHeader().setFont(
+            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12)
+        );
+        tabelaEmprestimos.setRowHeight(32);
+        tabelaEmprestimos.setGridColor(new java.awt.Color(229, 231, 235));
+    }
+    private void estilizarCabecalho() {
+        
+        jPanel1.setBackground(new java.awt.Color(102,102,255));
+
+
+        estilizarBotao(btnNovo, new java.awt.Color(67, 97, 238));
+        estilizarBotao(btnTodos, new java.awt.Color(67, 97, 238));
+        estilizarBotao(btnAtivos, new java.awt.Color(46, 196, 182));
+        estilizarBotao(btnAtrasados, new java.awt.Color(230, 57, 70));
+    }
+
+    private void estilizarBotao(javax.swing.JButton btn, java.awt.Color cor) {
+        btn.setBackground(cor);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     /**
@@ -31,7 +83,6 @@ public class EmprestimoView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
-        btnNovo = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         btnTodos = new javax.swing.JButton();
         btnAtivos = new javax.swing.JButton();
@@ -40,13 +91,14 @@ public class EmprestimoView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaEmprestimos = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        btnNovo = new javax.swing.JButton();
         btnDevolver = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1100, 680));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel1.setLayout(new java.awt.FlowLayout(1, 40, 30));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel4.setBackground(new java.awt.Color(102, 102, 255));
 
@@ -54,25 +106,25 @@ public class EmprestimoView extends javax.swing.JFrame {
         lblTitulo.setText("Empréstimos");
         jPanel4.add(lblTitulo);
 
-        btnNovo.setText("+ Novo Empréstimo");
-        jPanel4.add(btnNovo);
-
-        jPanel1.add(jPanel4);
+        jPanel1.add(jPanel4, java.awt.BorderLayout.WEST);
 
         jPanel5.setBackground(new java.awt.Color(102, 102, 255));
 
         btnTodos.setText("Todos");
+        btnTodos.addActionListener(this::btnTodosActionPerformed);
         jPanel5.add(btnTodos);
 
         btnAtivos.setText("Ativos");
+        btnAtivos.addActionListener(this::btnAtivosActionPerformed);
         jPanel5.add(btnAtivos);
 
         btnAtrasados.setText("Atrasados");
+        btnAtrasados.addActionListener(this::btnAtrasadosActionPerformed);
         jPanel5.add(btnAtrasados);
 
-        jPanel1.add(jPanel5);
+        jPanel1.add(jPanel5, java.awt.BorderLayout.EAST);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setLayout(new java.awt.CardLayout(100, 20));
 
@@ -91,17 +143,143 @@ public class EmprestimoView extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPane1, "card2");
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel2, java.awt.BorderLayout.CENTER);
 
         jPanel3.setLayout(new java.awt.FlowLayout(1, 40, 30));
 
+        btnNovo.setText("+ Novo Empréstimo");
+        btnNovo.addActionListener(this::btnNovoActionPerformed);
+        jPanel3.add(btnNovo);
+
         btnDevolver.setText("Registrar Devolução");
+        btnDevolver.addActionListener(this::btnDevolverActionPerformed);
         jPanel3.add(btnDevolver);
 
-        getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
-
-        pack();
+        add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Novo Empréstimo");
+        dialog.setSize(450, 350);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JTextField fId = new JTextField();
+        JTextField fIsbn = new JTextField();
+        JTextField fCpf = new JTextField();
+        JTextField fDataEmp = new JTextField();
+        JTextField fPrevDev = new JTextField();
+
+        painel.add(new JLabel("ID:"));
+        painel.add(fId);
+
+        painel.add(new JLabel("ISBN:"));
+        painel.add(fIsbn);
+
+        painel.add(new JLabel("CPF Membro:"));
+        painel.add(fCpf);
+
+        painel.add(new JLabel("Data Empréstimo:"));
+        painel.add(fDataEmp);
+
+        painel.add(new JLabel("Prev. Devolução:"));
+        painel.add(fPrevDev);
+
+        JButton btnSalvar = new JButton("Salvar");
+
+        btnSalvar.addActionListener(e -> {
+
+            DefaultTableModel modelo =
+                    (DefaultTableModel) tabelaEmprestimos.getModel();
+
+            modelo.addRow(new Object[]{
+                fId.getText(),
+                fIsbn.getText(),
+                fCpf.getText(),
+                fDataEmp.getText(),
+                fPrevDev.getText(),
+                "",
+                "Ativo"
+            });
+
+            JOptionPane.showMessageDialog(dialog,
+                    "Empréstimo registrado com sucesso!");
+
+            dialog.dispose();
+        });
+
+        painel.add(new JLabel());
+        painel.add(btnSalvar);
+
+        dialog.add(painel);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnDevolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDevolverActionPerformed
+        int row = tabelaEmprestimos.getSelectedRow();
+
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Selecione um empréstimo.");
+                return;
+            }
+
+            DefaultTableModel modelo =
+                    (DefaultTableModel) tabelaEmprestimos.getModel();
+
+            String dataHoje =
+                    java.time.LocalDate.now().toString();
+
+            modelo.setValueAt(dataHoje, row, 5);
+            modelo.setValueAt("Devolvido", row, 6);
+
+            JOptionPane.showMessageDialog(this,
+                    "Devolução registrada com sucesso!");
+    }//GEN-LAST:event_btnDevolverActionPerformed
+
+    private void btnTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodosActionPerformed
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaEmprestimos.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        tabelaEmprestimos.setRowSorter(sorter);
+
+        sorter.setRowFilter(null);
+    }//GEN-LAST:event_btnTodosActionPerformed
+
+    private void btnAtivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtivosActionPerformed
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaEmprestimos.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        tabelaEmprestimos.setRowSorter(sorter);
+        
+        sorter.setRowFilter(
+        RowFilter.regexFilter("^Ativo$", 6)
+    );
+    }//GEN-LAST:event_btnAtivosActionPerformed
+
+    private void btnAtrasadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasadosActionPerformed
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaEmprestimos.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        tabelaEmprestimos.setRowSorter(sorter);
+        
+        sorter.setRowFilter(
+        RowFilter.regexFilter("^Atrasado$", 6)
+    );
+    }//GEN-LAST:event_btnAtrasadosActionPerformed
 
     /**
      * @param args the command line arguments

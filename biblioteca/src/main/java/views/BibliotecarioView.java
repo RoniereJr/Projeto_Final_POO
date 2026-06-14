@@ -4,11 +4,22 @@
  */
 package views;
 
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ronierejr
  */
-public class BibliotecarioView extends javax.swing.JFrame {
+public class BibliotecarioView extends javax.swing.JPanel {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BibliotecarioView.class.getName());
 
@@ -17,6 +28,45 @@ public class BibliotecarioView extends javax.swing.JFrame {
      */
     public BibliotecarioView() {
         initComponents();
+        estilizarCabecalho();
+        estilizarPagina();
+    }
+
+    private void estilizarPagina() {
+        setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel2.setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel3.setBackground(new java.awt.Color(247, 248, 250));
+
+        estilizarBotao(btnDesativar, new java.awt.Color(230, 57, 70));
+        
+        estilizarBotao(btnEditar, new java.awt.Color(46, 196, 182));
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(
+            new java.awt.Color(229, 231, 235)
+        ));
+
+        tabelaBibliotecarios.getTableHeader().setBackground(new java.awt.Color(26, 26, 46));
+        tabelaBibliotecarios.getTableHeader().setFont(
+            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12)
+        );
+        tabelaBibliotecarios.setRowHeight(32);
+        tabelaBibliotecarios.setGridColor(new java.awt.Color(229, 231, 235));
+    }
+    private void estilizarCabecalho() {
+        
+        jPanel1.setBackground(new java.awt.Color(102,102,255));
+
+
+        estilizarBotao(btnNovo, new java.awt.Color(67, 97, 238));
+    }
+
+    private void estilizarBotao(javax.swing.JButton btn, java.awt.Color cor) {
+        btn.setBackground(cor);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     /**
@@ -29,29 +79,31 @@ public class BibliotecarioView extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
-        btnNovo = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaBibliotecarios = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnDesativar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1100, 680));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel1.setLayout(new java.awt.FlowLayout(1, 40, 30));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel4.setBackground(new java.awt.Color(102, 102, 255));
 
         lblTitulo.setFont(new java.awt.Font("Adwaita Mono", 1, 24)); // NOI18N
         lblTitulo.setText("Bibliotecários");
-        jPanel1.add(lblTitulo);
+        jPanel4.add(lblTitulo);
 
-        btnNovo.setText("+ Novo Bibliotecário");
-        jPanel1.add(btnNovo);
+        jPanel1.add(jPanel4, java.awt.BorderLayout.WEST);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setLayout(new java.awt.CardLayout(100, 20));
 
@@ -70,20 +122,187 @@ public class BibliotecarioView extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPane1, "card2");
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel2, java.awt.BorderLayout.CENTER);
 
         jPanel3.setLayout(new java.awt.FlowLayout(1, 40, 30));
 
+        btnNovo.setText("+ Novo Bibliotecário");
+        btnNovo.addActionListener(this::btnNovoActionPerformed);
+        jPanel3.add(btnNovo);
+
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(this::btnEditarActionPerformed);
         jPanel3.add(btnEditar);
 
         btnDesativar.setText("Desativar");
+        btnDesativar.addActionListener(this::btnDesativarActionPerformed);
         jPanel3.add(btnDesativar);
 
-        getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
-
-        pack();
+        add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Novo Bibliotecário");
+        dialog.setSize(400, 350);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JTextField fCpf = new JTextField();
+        JTextField fNome = new JTextField();
+        JTextField fLogin = new JTextField();
+        JTextField fCargo = new JTextField();
+        JPasswordField fSenha = new JPasswordField();
+
+        
+
+        painel.add(new JLabel("CPF:"));
+        painel.add(fCpf);
+
+        painel.add(new JLabel("Nome:"));
+        painel.add(fNome);
+
+        painel.add(new JLabel("Login:"));
+        painel.add(fLogin);
+        
+        painel.add(new JLabel("Senha:"));
+        painel.add(fSenha);
+
+        painel.add(new JLabel("Cargo:"));
+        painel.add(fCargo);
+
+        JButton btnSalvar = new JButton("Salvar");
+
+        btnSalvar.addActionListener(e -> {
+
+            if (fCpf.getText().trim().isEmpty() ||
+                fNome.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(dialog,
+                        "CPF e Nome são obrigatórios!");
+                return;
+            }
+
+            DefaultTableModel modelo =
+                    (DefaultTableModel) tabelaBibliotecarios.getModel();
+
+            modelo.addRow(new Object[]{
+                fCpf.getText().trim(),
+                fNome.getText().trim(),
+                fLogin.getText().trim(),
+                fCargo.getText().trim(),
+                "Ativo"
+            });
+
+            dialog.dispose();
+        });
+
+        painel.add(new JLabel());
+        painel.add(btnSalvar);
+
+        dialog.add(painel);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int row = tabelaBibliotecarios.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um bibliotecário.");
+            return;
+        }
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaBibliotecarios.getModel();
+
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Editar Bibliotecário");
+        dialog.setSize(400, 350);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JTextField fCpf =
+                new JTextField(modelo.getValueAt(row, 0).toString());
+
+        JTextField fNome =
+                new JTextField(modelo.getValueAt(row, 1).toString());
+
+        JTextField fLogin =
+                new JTextField(modelo.getValueAt(row, 2).toString());
+
+        JTextField fCargo =
+                new JTextField(modelo.getValueAt(row, 3).toString());
+
+        fCpf.setEditable(false);
+
+        painel.add(new JLabel("CPF:"));
+        painel.add(fCpf);
+
+        painel.add(new JLabel("Nome:"));
+        painel.add(fNome);
+
+        painel.add(new JLabel("Login:"));
+        painel.add(fLogin);
+
+        painel.add(new JLabel("Cargo:"));
+        painel.add(fCargo);
+
+        JButton btnSalvar = new JButton("Salvar");
+
+        btnSalvar.addActionListener(e -> {
+
+            modelo.setValueAt(fNome.getText().trim(), row, 1);
+            modelo.setValueAt(fLogin.getText().trim(), row, 2);
+            modelo.setValueAt(fCargo.getText().trim(), row, 3);
+
+            JOptionPane.showMessageDialog(dialog,
+                    "Bibliotecário atualizado com sucesso!");
+
+            dialog.dispose();
+        });
+
+        painel.add(new JLabel());
+        painel.add(btnSalvar);
+
+        dialog.add(painel);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnDesativarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesativarActionPerformed
+        int row = tabelaBibliotecarios.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um bibliotecário.");
+            return;
+        }
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaBibliotecarios.getModel();
+
+        String nome = modelo.getValueAt(row, 1).toString();
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Deseja desativar " + nome + "?",
+                "Confirmação",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+
+            modelo.setValueAt("Inativo", row, 4);
+
+            JOptionPane.showMessageDialog(this,
+                    "Bibliotecário desativado com sucesso!");
+        }
+    }//GEN-LAST:event_btnDesativarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -117,6 +336,7 @@ public class BibliotecarioView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tabelaBibliotecarios;

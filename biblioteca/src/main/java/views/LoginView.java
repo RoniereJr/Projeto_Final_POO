@@ -23,6 +23,8 @@ public class LoginView extends javax.swing.JFrame {
     public LoginView() {
         initComponents();
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -116,9 +118,11 @@ public class LoginView extends javax.swing.JFrame {
             return;
         }
 
-        lblErro.setText("");
-        JOptionPane.showMessageDialog(this, "Login efetuado! Usuário: " + login);
-    }// GEN-LAST:event_btnEntrarActionPerformed
+        MainView mainView = new MainView();
+        mainView.configurarUsuario("João Silva", "SUPERVISOR"); // depois vem do Controller
+        mainView.setVisible(true);
+        dispose(); 
+    }
 
     private void campoSenhaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_campoSenhaActionPerformed
         // TODO add your handling code here:

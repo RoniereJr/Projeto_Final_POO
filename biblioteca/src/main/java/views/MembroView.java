@@ -4,11 +4,23 @@
  */
 package views;
 
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 /**
  *
  * @author ronierejr
  */
-public class MembroView extends javax.swing.JFrame {
+public class MembroView extends javax.swing.JPanel {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MembroView.class.getName());
 
@@ -17,6 +29,47 @@ public class MembroView extends javax.swing.JFrame {
      */
     public MembroView() {
         initComponents();
+        estilizarCabecalho();
+        estilizarPagina();
+    }
+
+    private void estilizarPagina() {
+        setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel2.setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel3.setBackground(new java.awt.Color(247, 248, 250));
+
+        estilizarBotao(btnDesativar, new java.awt.Color(230, 57, 70));
+        
+        estilizarBotao(btnEditar, new java.awt.Color(46, 196, 182));
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(
+            new java.awt.Color(229, 231, 235)
+        ));
+
+        tabelaMembros.getTableHeader().setBackground(new java.awt.Color(26, 26, 46));
+        tabelaMembros.getTableHeader().setFont(
+            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12)
+        );
+        tabelaMembros.setRowHeight(32);
+        tabelaMembros.setGridColor(new java.awt.Color(229, 231, 235));
+    }
+    private void estilizarCabecalho() {
+        
+        jPanel1.setBackground(new java.awt.Color(102,102,255));
+
+
+        estilizarBotao(btnNovo, new java.awt.Color(67, 97, 238));
+        estilizarBotao(btnTodos, new java.awt.Color(67, 97, 238));
+        estilizarBotao(btnSuspensos, new java.awt.Color(230, 57, 70));
+    }
+
+    private void estilizarBotao(javax.swing.JButton btn, java.awt.Color cor) {
+        btn.setBackground(cor);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     /**
@@ -29,37 +82,46 @@ public class MembroView extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
-        btnNovo = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
         btnTodos = new javax.swing.JButton();
         btnSuspensos = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaMembros = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnDesativar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1100, 680));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel1.setLayout(new java.awt.FlowLayout(1, 40, 30));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel4.setBackground(new java.awt.Color(102, 102, 255));
 
         lblTitulo.setFont(new java.awt.Font("Adwaita Mono", 1, 24)); // NOI18N
         lblTitulo.setText("Membros");
-        jPanel1.add(lblTitulo);
+        jPanel4.add(lblTitulo);
 
-        btnNovo.setText("+ Novo Membro");
-        jPanel1.add(btnNovo);
+        jPanel1.add(jPanel4, java.awt.BorderLayout.WEST);
+
+        jPanel5.setBackground(new java.awt.Color(102, 102, 255));
 
         btnTodos.setText("Todos");
-        jPanel1.add(btnTodos);
+        btnTodos.addActionListener(this::btnTodosActionPerformed);
+        jPanel5.add(btnTodos);
 
         btnSuspensos.setText("Suspensos");
-        jPanel1.add(btnSuspensos);
+        btnSuspensos.addActionListener(this::btnSuspensosActionPerformed);
+        jPanel5.add(btnSuspensos);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        jPanel1.add(jPanel5, java.awt.BorderLayout.EAST);
+
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setLayout(new java.awt.CardLayout(100, 20));
 
@@ -78,9 +140,13 @@ public class MembroView extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPane1, "card2");
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel2, java.awt.BorderLayout.CENTER);
 
         jPanel3.setLayout(new java.awt.FlowLayout(1, 40, 30));
+
+        btnNovo.setText("+ Novo Membro");
+        btnNovo.addActionListener(this::btnNovoActionPerformed);
+        jPanel3.add(btnNovo);
 
         btnEditar.setText("Editar");
         btnEditar.addActionListener(this::btnEditarActionPerformed);
@@ -90,18 +156,199 @@ public class MembroView extends javax.swing.JFrame {
         btnDesativar.addActionListener(this::btnDesativarActionPerformed);
         jPanel3.add(btnDesativar);
 
-        getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
-
-        pack();
+        add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDesativarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesativarActionPerformed
-        // TODO add your handling code here:
+        int row = tabelaMembros.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um membro.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel modelo =
+            (DefaultTableModel) tabelaMembros.getModel();
+
+        String nome = (String) modelo.getValueAt(row, 1);
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Deseja suspender o membro \"" + nome + "\"?",
+                "Confirmar Suspensão",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+
+            modelo.setValueAt("Suspenso", row, 4);
+
+            JOptionPane.showMessageDialog(this,
+                    "Membro suspenso com sucesso!");
+        }
     }//GEN-LAST:event_btnDesativarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+
+        int row = tabelaMembros.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um membro para editar.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel modelo =
+            (DefaultTableModel) tabelaMembros.getModel();
+
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Editar Membro");
+        dialog.setSize(400, 350);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JTextField fCpf =
+            new JTextField((String) modelo.getValueAt(row, 0));
+
+        JTextField fNome =
+            new JTextField((String) modelo.getValueAt(row, 1));
+
+        JTextField fEmail =
+            new JTextField((String) modelo.getValueAt(row, 2));
+
+        JTextField fTelefone =
+            new JTextField((String) modelo.getValueAt(row, 3));
+
+        fCpf.setEditable(false);
+
+        painel.add(new JLabel("CPF:"));
+        painel.add(fCpf);
+
+        painel.add(new JLabel("Nome:"));
+        painel.add(fNome);
+
+        painel.add(new JLabel("Email:"));
+        painel.add(fEmail);
+
+        painel.add(new JLabel("Telefone:"));
+        painel.add(fTelefone);
+
+        JButton btnSalvar = new JButton("Salvar");
+
+        btnSalvar.addActionListener(e -> {
+
+            modelo.setValueAt(fNome.getText().trim(), row, 1);
+            modelo.setValueAt(fEmail.getText().trim(), row, 2);
+            modelo.setValueAt(fTelefone.getText().trim(), row, 3);
+
+            JOptionPane.showMessageDialog(dialog,
+                    "Membro atualizado com sucesso!");
+
+            dialog.dispose();
+        });
+
+        painel.add(new JLabel());
+        painel.add(btnSalvar);
+
+        dialog.add(painel);
+        dialog.setVisible(true);
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+         JDialog dialog = new JDialog();
+        dialog.setTitle("Novo Membro");
+        dialog.setSize(400, 350);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JTextField fCpf = new JTextField();
+        JTextField fNome = new JTextField();
+        JTextField fEmail = new JTextField();
+        JTextField fTelefone = new JTextField();
+
+        painel.add(new JLabel("CPF:"));
+        painel.add(fCpf);
+
+        painel.add(new JLabel("Nome:"));
+        painel.add(fNome);
+
+        painel.add(new JLabel("Email:"));
+        painel.add(fEmail);
+
+        painel.add(new JLabel("Telefone:"));
+        painel.add(fTelefone);
+
+        JButton btnSalvar = new JButton("Salvar");
+
+        btnSalvar.addActionListener(e -> {
+
+            if (fCpf.getText().trim().isEmpty() ||
+                fNome.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(dialog,
+                        "CPF e Nome são obrigatórios!",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            DefaultTableModel modelo =
+                (DefaultTableModel) tabelaMembros.getModel();
+
+            modelo.addRow(new Object[]{
+                fCpf.getText().trim(),
+                fNome.getText().trim(),
+                fEmail.getText().trim(),
+                fTelefone.getText().trim(),
+                "Ativo"
+            });
+
+            JOptionPane.showMessageDialog(dialog,
+                    "Membro cadastrado com sucesso!");
+
+            dialog.dispose();
+        });
+
+        painel.add(new JLabel());
+        painel.add(btnSalvar);
+
+        dialog.add(painel);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodosActionPerformed
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaMembros.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        tabelaMembros.setRowSorter(sorter);
+
+        sorter.setRowFilter(null);
+    }//GEN-LAST:event_btnTodosActionPerformed
+
+    private void btnSuspensosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuspensosActionPerformed
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaMembros.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        tabelaMembros.setRowSorter(sorter);
+
+        sorter.setRowFilter(RowFilter.regexFilter("^Suspenso$", 4));
+    }//GEN-LAST:event_btnSuspensosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -137,6 +384,8 @@ public class MembroView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tabelaMembros;

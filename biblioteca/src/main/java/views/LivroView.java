@@ -4,20 +4,28 @@
  */
 package views;
 
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ronierejr
  */
-public class LivroView extends javax.swing.JFrame {
+public class LivroView extends javax.swing.JPanel {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LivroView.class.getName());
 
     /**
      * Creates new form LivroView
      */
-    public LivroView() {
-        initComponents();
-    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,46 +37,50 @@ public class LivroView extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        lblTitulo = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         campoBusca = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
-        btnNovo = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaLivros = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         btnAddCopia = new javax.swing.JButton();
         btnRemCopia = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1100, 680));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 255));
         jPanel1.setMinimumSize(new java.awt.Dimension(457, 200));
-        jPanel1.setLayout(new java.awt.FlowLayout(1, 40, 30));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
-        lblTitulo.setFont(new java.awt.Font("Adwaita Mono", 1, 24)); // NOI18N
-        lblTitulo.setText("Acervo de Livros");
-        jPanel1.add(lblTitulo);
-
+        jPanel4.setBackground(new java.awt.Color(102, 102, 255));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
 
-        campoBusca.setPreferredSize(new java.awt.Dimension(124, 24));
+        campoBusca.setMaximumSize(new java.awt.Dimension(2147483647, 25));
+        campoBusca.setPreferredSize(new java.awt.Dimension(200, 15));
         campoBusca.addActionListener(this::campoBuscaActionPerformed);
         jPanel4.add(campoBusca);
 
         btnBuscar.setText("Buscar");
         jPanel4.add(btnBuscar);
 
-        jPanel1.add(jPanel4);
+        jPanel1.add(jPanel4, java.awt.BorderLayout.EAST);
 
-        btnNovo.setText("+ Novo Livro");
-        jPanel1.add(btnNovo);
+        jPanel5.setBackground(new java.awt.Color(102, 102, 255));
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        lblTitulo.setFont(new java.awt.Font("Adwaita Mono", 1, 24)); // NOI18N
+        lblTitulo.setText("Acervo de Livros");
+        jPanel5.add(lblTitulo);
+
+        jPanel1.add(jPanel5, java.awt.BorderLayout.WEST);
+
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         jPanel2.setLayout(new java.awt.CardLayout(100, 20));
 
@@ -87,35 +99,264 @@ public class LivroView extends javax.swing.JFrame {
 
         jPanel2.add(jScrollPane1, "card2");
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel2, java.awt.BorderLayout.CENTER);
 
         jPanel3.setLayout(new java.awt.FlowLayout(1, 40, 30));
+
+        btnNovo.setText("+ Novo Livro");
+        btnNovo.addActionListener(this::btnNovoActionPerformed);
+        jPanel3.add(btnNovo);
 
         btnEditar.setText("Editar");
         btnEditar.addActionListener(this::btnEditarActionPerformed);
         jPanel3.add(btnEditar);
 
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(this::btnExcluirActionPerformed);
         jPanel3.add(btnExcluir);
 
         btnAddCopia.setText("+ Cópia");
+        btnAddCopia.addActionListener(this::btnAddCopiaActionPerformed);
         jPanel3.add(btnAddCopia);
 
         btnRemCopia.setText("− Cópia");
+        btnRemCopia.addActionListener(this::btnRemCopiaActionPerformed);
         jPanel3.add(btnRemCopia);
 
-        getContentPane().add(jPanel3, java.awt.BorderLayout.PAGE_END);
-
-        pack();
+        add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
+    public LivroView() {
+        initComponents();
+        estilizarCabecalho();
+        estilizarPagina();
+    }
+
+    private void estilizarPagina() {
+        setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel2.setBackground(new java.awt.Color(247, 248, 250));
+
+        jPanel3.setBackground(new java.awt.Color(247, 248, 250));
+
+        estilizarBotao(btnExcluir, new java.awt.Color(230, 57, 70));
+        estilizarBotao(btnRemCopia, new java.awt.Color(230, 57, 70));
+        
+        estilizarBotao(btnEditar, new java.awt.Color(46, 196, 182));
+        estilizarBotao(btnAddCopia, new java.awt.Color(46, 196, 182));
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(
+            new java.awt.Color(229, 231, 235)
+        ));
+
+        tabelaLivros.getTableHeader().setBackground(new java.awt.Color(26, 26, 46));
+        tabelaLivros.getTableHeader().setFont(
+            new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12)
+        );
+        tabelaLivros.setRowHeight(32);
+        tabelaLivros.setGridColor(new java.awt.Color(229, 231, 235));
+    }
+    private void estilizarCabecalho() {
+        
+        jPanel1.setBackground(new java.awt.Color(102,102,255));
+
+
+        estilizarBotao(btnNovo, new java.awt.Color(67, 97, 238));
+    }
+
+    private void estilizarBotao(javax.swing.JButton btn, java.awt.Color cor) {
+        btn.setBackground(cor);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+    }
+    
     private void campoBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoBuscaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_campoBuscaActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+        int row = tabelaLivros.getSelectedRow();
+    if (row < 0) {
+        JOptionPane.showMessageDialog(this,
+            "Selecione um livro para editar.", "Aviso",
+            JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    JDialog dialog = new JDialog();
+    dialog.setTitle("Editar Livro");
+    dialog.setSize(400, 350);
+    dialog.setModal(true);
+    dialog.setLocationRelativeTo(this);
+
+    JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+    painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+
+    javax.swing.table.DefaultTableModel modelo =
+        (javax.swing.table.DefaultTableModel) tabelaLivros.getModel();
+
+    JTextField fIsbn   = new JTextField((String) modelo.getValueAt(row, 0));
+    JTextField fTitulo = new JTextField((String) modelo.getValueAt(row, 1));
+    JTextField fAutor  = new JTextField((String) modelo.getValueAt(row, 2));
+    JTextField fAno    = new JTextField((String) modelo.getValueAt(row, 3));
+    JTextField fCopias = new JTextField((String) modelo.getValueAt(row, 4));
+    fIsbn.setEditable(false); 
+
+    painel.add(new JLabel("ISBN:"));   painel.add(fIsbn);
+    painel.add(new JLabel("Título:")); painel.add(fTitulo);
+    painel.add(new JLabel("Autor:"));  painel.add(fAutor);
+    painel.add(new JLabel("Ano:"));    painel.add(fAno);
+    painel.add(new JLabel("Cópias:")); painel.add(fCopias);
+
+    JButton btnSalvar = new JButton("Salvar");
+    btnSalvar.addActionListener(e -> {
+        if (fTitulo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(dialog,
+                "Título é obrigatório!", "Erro",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        modelo.setValueAt(fTitulo.getText().trim(), row, 1);
+        modelo.setValueAt(fAutor.getText().trim(),  row, 2);
+        modelo.setValueAt(fAno.getText().trim(),    row, 3);
+        modelo.setValueAt(fCopias.getText().trim(), row, 4);
+
+        JOptionPane.showMessageDialog(dialog,
+            "Livro atualizado com sucesso!", "Sucesso",
+            JOptionPane.INFORMATION_MESSAGE);
+        dialog.dispose();
+    });
+
+    painel.add(new JLabel());
+    painel.add(btnSalvar);
+    dialog.add(painel);
+    dialog.setVisible(true);
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Novo Livro");
+        dialog.setSize(400, 350);
+        dialog.setModal(true); 
+        dialog.setLocationRelativeTo(this);
+
+        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        painel.add(new JLabel("ISBN:")); JTextField fIsbn = new JTextField(); painel.add(fIsbn);
+        painel.add(new JLabel("Título:")); JTextField fTitulo = new JTextField(); painel.add(fTitulo);
+        painel.add(new JLabel("Autor:")); JTextField fAutor = new JTextField(); painel.add(fAutor);
+        painel.add(new JLabel("Ano:")); JTextField fAno = new JTextField(); painel.add(fAno);
+        painel.add(new JLabel("Cópias:")); JTextField fCopias = new JTextField(); painel.add(fCopias);
+
+        JButton btnSalvar = new JButton("Salvar");
+        btnSalvar.addActionListener(e -> {
+            // Aqui vai chamar o listener/controller futuramente
+            dialog.dispose();
+        });
+
+        painel.add(new JLabel());
+        painel.add(btnSalvar);
+
+        dialog.add(painel);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+
+        int row = tabelaLivros.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                "Selecione um livro para excluir.", "Aviso",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        javax.swing.table.DefaultTableModel modelo =
+            (javax.swing.table.DefaultTableModel) tabelaLivros.getModel();
+
+        String titulo = (String) modelo.getValueAt(row, 1);
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Deseja excluir o livro \"" + titulo + "\"?",
+            "Confirmar Exclusão",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            modelo.removeRow(row);
+            JOptionPane.showMessageDialog(this,
+                "Livro excluído com sucesso!", "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnAddCopiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCopiaActionPerformed
+        int row = tabelaLivros.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um livro.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaLivros.getModel();
+
+        int total = Integer.parseInt(
+                modelo.getValueAt(row, 4).toString());
+
+        int disponiveis = Integer.parseInt(
+                modelo.getValueAt(row, 5).toString());
+
+        modelo.setValueAt(total + 1, row, 4);
+        modelo.setValueAt(disponiveis + 1, row, 5);
+
+        JOptionPane.showMessageDialog(this,
+                "Cópia adicionada com sucesso!");
+
+    }//GEN-LAST:event_btnAddCopiaActionPerformed
+
+    private void btnRemCopiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemCopiaActionPerformed
+
+        int row = tabelaLivros.getSelectedRow();
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Selecione um livro.",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) tabelaLivros.getModel();
+
+        int total = Integer.parseInt(
+                modelo.getValueAt(row, 4).toString());
+
+        int disponiveis = Integer.parseInt(
+                modelo.getValueAt(row, 5).toString());
+
+        if (total <= 0 || disponiveis <= 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Não há cópias disponíveis para remover.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        modelo.setValueAt(total - 1, row, 4);
+        modelo.setValueAt(disponiveis - 1, row, 5);
+
+        JOptionPane.showMessageDialog(this,
+                "Cópia removida com sucesso!");
+    }//GEN-LAST:event_btnRemCopiaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -154,6 +395,7 @@ public class LivroView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tabelaLivros;
