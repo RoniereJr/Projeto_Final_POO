@@ -11,11 +11,10 @@ public class Emprestimo {
     private boolean devolvido;
 
     // CONSTRUTOR
-    public Emprestimo(Livro livro, Membro membro, Date dataEmprestimo, Date dataDevolucaoPrevista, Date dataDevolucaoReal, boolean devolvido) {
-        this.dataEmprestimo = dataEmprestimo;
-        this.dataDevolucaoPrevista = dataDevolucaoPrevista;
-        this.dataDevolucaoReal = dataDevolucaoReal;
-        this.devolvido = devolvido;
+    public Emprestimo(Livro livro, Membro membro) {
+        this.dataEmprestimo = Date.timelocal();
+        this.dataDevolucaoPrevista = this.dataEmprestimo + 7;
+        this.devolvido = false;
     }
 
     // METODOS
@@ -27,11 +26,16 @@ public class Emprestimo {
 //    }
 
     public void excluirEmprestimo(Emprestimo emprestimo){
-        // remover
+        
     }
 
     public void registrarDevolucao(){
         this.devolvido = true;
+    }
+    
+    public static Emprestimo criaEmprestimo(Livro livro, Membro membro){
+        return new Emprestimo(livro, membro);
+        
     }
 
 //    public float calcularMulta(){
