@@ -29,7 +29,7 @@ public class EmprestimoDAO {
                 rs.getInt("membro_ativo") == 1,
                 rs.getString("membro_endereco"),
                 rs.getString("membro_telefone"),
-                rs.getString("membro_email"));
+                rs.getString("membro_email")) {};
         String realStr = rs.getString("dataDevolucaoReal");
         return new Emprestimo(
                 livro,

@@ -32,6 +32,14 @@ public class MembroView extends javax.swing.JPanel {
         estilizarCabecalho();
         estilizarPagina();
     }
+    
+    private dao.MembroDAO membroDAO = new dao.MembroDAO();
+    private controllers.UsuarioController usuarioController = new controllers.UsuarioController();
+    private models.Usuario usuarioLogado;
+
+    public void setUsuarioLogado(models.Usuario usuario) {
+        this.usuarioLogado = usuario;
+    }
 
     private void estilizarPagina() {
         setBackground(new java.awt.Color(247, 248, 250));
@@ -159,34 +167,57 @@ public class MembroView extends javax.swing.JPanel {
         add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
+    public void carregarTabela() {
+    try {
+        javax.swing.table.DefaultTableModel modelo =
+            (javax.swing.table.DefaultTableModel) tabelaMembros.getModel();
+        modelo.setRowCount(0);
+
+        for (models.Membro m : membroDAO.listarMembros()) {
+            modelo.addRow(new Object[]{
+                m.getCpf(), m.getNome(), m.getEmail(),
+                m.getTelefone(), m.isAtivo() ? "Ativo" : "Inativo"
+            });
+        }
+    } catch (java.sql.SQLException e) {
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Erro: " + e.getMessage(), "Erro",
+            javax.swing.JOptionPane.ERROR_MESSAGE);
+    }
+}
+    
+    
+    
     private void btnDesativarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDesativarActionPerformed
         int row = tabelaMembros.getSelectedRow();
-
         if (row < 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Selecione um membro.",
-                    "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Selecione um membro.", "Aviso",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        DefaultTableModel modelo =
-            (DefaultTableModel) tabelaMembros.getModel();
+        String cpf = tabelaMembros.getModel().getValueAt(row, 0).toString();
 
-        String nome = (String) modelo.getValueAt(row, 1);
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Desativar membro CPF " + cpf + "?", "Confirmar",
+            javax.swing.JOptionPane.YES_NO_OPTION);
 
-        int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "Deseja suspender o membro \"" + nome + "\"?",
-                "Confirmar Suspensão",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-
-            modelo.setValueAt("Suspenso", row, 4);
-
-            JOptionPane.showMessageDialog(this,
-                    "Membro suspenso com sucesso!");
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                models.Membro membro = membroDAO.buscarPorCpf(cpf);
+                if (membro != null) {
+                    new dao.UsuarioDAO().desativarUsuario(membro);
+                    carregarTabela();
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        "Membro desativado!", "Sucesso",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (java.sql.SQLException ex) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Erro: " + ex.getMessage(), "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnDesativarActionPerformed
 
@@ -262,92 +293,92 @@ public class MembroView extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-         JDialog dialog = new JDialog();
+        javax.swing.JDialog dialog = new javax.swing.JDialog();
         dialog.setTitle("Novo Membro");
-        dialog.setSize(400, 350);
+        dialog.setSize(420, 380);
         dialog.setModal(true);
         dialog.setLocationRelativeTo(this);
 
-        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
-        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        javax.swing.JPanel painel = new javax.swing.JPanel(new java.awt.GridLayout(8, 2, 10, 10));
+        painel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JTextField fCpf = new JTextField();
-        JTextField fNome = new JTextField();
-        JTextField fEmail = new JTextField();
-        JTextField fTelefone = new JTextField();
+        javax.swing.JTextField fNome  = new javax.swing.JTextField();
+        javax.swing.JTextField fCpf   = new javax.swing.JTextField();
+        javax.swing.JTextField fLogin = new javax.swing.JTextField();
+        javax.swing.JPasswordField fSenha = new javax.swing.JPasswordField();
+        javax.swing.JTextField fEnd   = new javax.swing.JTextField();
+        javax.swing.JTextField fTel   = new javax.swing.JTextField();
+        javax.swing.JTextField fEmail = new javax.swing.JTextField();
 
-        painel.add(new JLabel("CPF:"));
-        painel.add(fCpf);
+        painel.add(new javax.swing.JLabel("Nome:"));     painel.add(fNome);
+        painel.add(new javax.swing.JLabel("CPF:"));      painel.add(fCpf);
+        painel.add(new javax.swing.JLabel("Login:"));    painel.add(fLogin);
+        painel.add(new javax.swing.JLabel("Senha:"));    painel.add(fSenha);
+        painel.add(new javax.swing.JLabel("Endereço:")); painel.add(fEnd);
+        painel.add(new javax.swing.JLabel("Telefone:")); painel.add(fTel);
+        painel.add(new javax.swing.JLabel("Email:"));    painel.add(fEmail);
 
-        painel.add(new JLabel("Nome:"));
-        painel.add(fNome);
-
-        painel.add(new JLabel("Email:"));
-        painel.add(fEmail);
-
-        painel.add(new JLabel("Telefone:"));
-        painel.add(fTelefone);
-
-        JButton btnSalvar = new JButton("Salvar");
+        javax.swing.JButton btnSalvar = new javax.swing.JButton("Salvar");
+        btnSalvar.setBackground(new java.awt.Color(67, 97, 238));
+        btnSalvar.setForeground(java.awt.Color.WHITE);
+        btnSalvar.setBorderPainted(false);
 
         btnSalvar.addActionListener(e -> {
-
-            if (fCpf.getText().trim().isEmpty() ||
-                fNome.getText().trim().isEmpty()) {
-
-                JOptionPane.showMessageDialog(dialog,
-                        "CPF e Nome são obrigatórios!",
-                        "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+            if (fNome.getText().trim().isEmpty() || fCpf.getText().trim().isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Nome e CPF são obrigatórios!", "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            // Usa o Controller — valida permissão automaticamente
+            boolean sucesso = usuarioController.cadastrarMembro(
+                usuarioLogado,
+                fNome.getText().trim(), fCpf.getText().trim(),
+                fLogin.getText().trim(), new String(fSenha.getPassword()),
+                fEnd.getText().trim(), fTel.getText().trim(),
+                fEmail.getText().trim()
+            );
 
-            DefaultTableModel modelo =
-                (DefaultTableModel) tabelaMembros.getModel();
-
-            modelo.addRow(new Object[]{
-                fCpf.getText().trim(),
-                fNome.getText().trim(),
-                fEmail.getText().trim(),
-                fTelefone.getText().trim(),
-                "Ativo"
-            });
-
-            JOptionPane.showMessageDialog(dialog,
-                    "Membro cadastrado com sucesso!");
-
-            dialog.dispose();
+            if (sucesso) {
+                carregarTabela();
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Membro cadastrado!", "Sucesso",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Sem permissão ou dados inválidos.", "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
         });
 
-        painel.add(new JLabel());
+        painel.add(new javax.swing.JLabel());
         painel.add(btnSalvar);
-
         dialog.add(painel);
         dialog.setVisible(true);
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodosActionPerformed
-        DefaultTableModel modelo =
-                (DefaultTableModel) tabelaMembros.getModel();
-
-        TableRowSorter<DefaultTableModel> sorter =
-                new TableRowSorter<>(modelo);
-
-        tabelaMembros.setRowSorter(sorter);
-
-        sorter.setRowFilter(null);
+    carregarTabela();
     }//GEN-LAST:event_btnTodosActionPerformed
 
     private void btnSuspensosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuspensosActionPerformed
-        DefaultTableModel modelo =
-                (DefaultTableModel) tabelaMembros.getModel();
+        try {
+            javax.swing.table.DefaultTableModel modelo =
+                (javax.swing.table.DefaultTableModel) tabelaMembros.getModel();
+            modelo.setRowCount(0);
 
-        TableRowSorter<DefaultTableModel> sorter =
-                new TableRowSorter<>(modelo);
-
-        tabelaMembros.setRowSorter(sorter);
-
-        sorter.setRowFilter(RowFilter.regexFilter("^Suspenso$", 4));
+            for (models.Membro m : membroDAO.listarMembrosSuspensos()) {
+                modelo.addRow(new Object[]{
+                    m.getCpf(), m.getNome(), m.getEmail(),
+                    m.getTelefone(), "Suspenso"
+                });
+            }
+        } catch (java.sql.SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Erro: " + e.getMessage(), "Erro",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnSuspensosActionPerformed
 
     /**

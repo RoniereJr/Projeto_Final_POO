@@ -31,6 +31,14 @@ public class BibliotecarioView extends javax.swing.JPanel {
         estilizarCabecalho();
         estilizarPagina();
     }
+    
+    private dao.BibliotecarioDAO bibliotecarioDAO = new dao.BibliotecarioDAO();
+    private controllers.UsuarioController usuarioController = new controllers.UsuarioController();
+    private models.Usuario usuarioLogado;
+
+    public void setUsuarioLogado(models.Usuario usuario) {
+        this.usuarioLogado = usuario;
+    }
 
     private void estilizarPagina() {
         setBackground(new java.awt.Color(247, 248, 250));
@@ -141,68 +149,85 @@ public class BibliotecarioView extends javax.swing.JPanel {
         add(jPanel3, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
+    public void carregarTabela() {
+        try {
+            javax.swing.table.DefaultTableModel modelo =
+                (javax.swing.table.DefaultTableModel) tabelaBibliotecarios.getModel();
+            modelo.setRowCount(0);
+
+            for (models.Bibliotecario b : bibliotecarioDAO.listarBibliotecarios()) {
+                modelo.addRow(new Object[]{
+                    b.getCpf(), b.getNome(), b.getLogin(),
+                    b.getCargo().name(), b.isAtivo() ? "Ativo" : "Inativo"
+                });
+            }
+        } catch (java.sql.SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Erro: " + e.getMessage(), "Erro",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        JDialog dialog = new JDialog();
+        javax.swing.JDialog dialog = new javax.swing.JDialog();
         dialog.setTitle("Novo Bibliotecário");
-        dialog.setSize(400, 350);
+        dialog.setSize(400, 320);
         dialog.setModal(true);
         dialog.setLocationRelativeTo(this);
 
-        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
-        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        javax.swing.JPanel painel = new javax.swing.JPanel(new java.awt.GridLayout(6, 2, 10, 10));
+        painel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JTextField fCpf = new JTextField();
-        JTextField fNome = new JTextField();
-        JTextField fLogin = new JTextField();
-        JTextField fCargo = new JTextField();
-        JPasswordField fSenha = new JPasswordField();
+        javax.swing.JTextField fNome  = new javax.swing.JTextField();
+        javax.swing.JTextField fCpf   = new javax.swing.JTextField();
+        javax.swing.JTextField fLogin = new javax.swing.JTextField();
+        javax.swing.JPasswordField fSenha = new javax.swing.JPasswordField();
+        String[] cargos = {"ESTAGIARIO", "ATENDENTE", "SUPERVISOR"};
+        javax.swing.JComboBox<String> cbCargo = new javax.swing.JComboBox<>(cargos);
 
-        
+        painel.add(new javax.swing.JLabel("Nome:"));  painel.add(fNome);
+        painel.add(new javax.swing.JLabel("CPF:"));   painel.add(fCpf);
+        painel.add(new javax.swing.JLabel("Login:")); painel.add(fLogin);
+        painel.add(new javax.swing.JLabel("Senha:")); painel.add(fSenha);
+        painel.add(new javax.swing.JLabel("Cargo:")); painel.add(cbCargo);
 
-        painel.add(new JLabel("CPF:"));
-        painel.add(fCpf);
-
-        painel.add(new JLabel("Nome:"));
-        painel.add(fNome);
-
-        painel.add(new JLabel("Login:"));
-        painel.add(fLogin);
-        
-        painel.add(new JLabel("Senha:"));
-        painel.add(fSenha);
-
-        painel.add(new JLabel("Cargo:"));
-        painel.add(fCargo);
-
-        JButton btnSalvar = new JButton("Salvar");
+        javax.swing.JButton btnSalvar = new javax.swing.JButton("Salvar");
+        btnSalvar.setBackground(new java.awt.Color(67, 97, 238));
+        btnSalvar.setForeground(java.awt.Color.WHITE);
+        btnSalvar.setBorderPainted(false);
 
         btnSalvar.addActionListener(e -> {
-
-            if (fCpf.getText().trim().isEmpty() ||
-                fNome.getText().trim().isEmpty()) {
-
-                JOptionPane.showMessageDialog(dialog,
-                        "CPF e Nome são obrigatórios!");
+            if (fNome.getText().trim().isEmpty() || fCpf.getText().trim().isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Nome e CPF são obrigatórios!", "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            models.Cargo cargo = models.Cargo.valueOf(cbCargo.getSelectedItem().toString());
 
-            DefaultTableModel modelo =
-                    (DefaultTableModel) tabelaBibliotecarios.getModel();
+            // Controller valida se é SUPERVISOR automaticamente
+            boolean sucesso = usuarioController.cadastrarBibliotecario(
+                usuarioLogado,
+                fNome.getText().trim(), fCpf.getText().trim(),
+                fLogin.getText().trim(), new String(fSenha.getPassword()),
+                cargo
+            );
 
-            modelo.addRow(new Object[]{
-                fCpf.getText().trim(),
-                fNome.getText().trim(),
-                fLogin.getText().trim(),
-                fCargo.getText().trim(),
-                "Ativo"
-            });
-
-            dialog.dispose();
+            if (sucesso) {
+                carregarTabela();
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Bibliotecário cadastrado!", "Sucesso",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Sem permissão! Apenas SUPERVISORES cadastram bibliotecários.", "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
         });
 
-        painel.add(new JLabel());
+        painel.add(new javax.swing.JLabel());
         painel.add(btnSalvar);
-
         dialog.add(painel);
         dialog.setVisible(true);
     }//GEN-LAST:event_btnNovoActionPerformed

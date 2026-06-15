@@ -129,7 +129,18 @@ public class LivroView extends javax.swing.JPanel {
     public LivroView() {
         initComponents();
         estilizarCabecalho();
-        estilizarPagina();
+        estilizarPagina();                                                                  
+        setPreferredSize(null);
+        setMinimumSize(null);
+        carregarTabela();
+    }
+    
+    private dao.LivroDAO livroDAO = new dao.LivroDAO();
+    private controllers.LivroController livroController = new controllers.LivroController();
+    private models.Usuario usuarioLogado;
+
+    public void setUsuarioLogado(models.Usuario usuario) {
+        this.usuarioLogado = usuario;
     }
 
     private void estilizarPagina() {
@@ -175,6 +186,25 @@ public class LivroView extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_campoBuscaActionPerformed
 
+    public void carregarTabela() {
+        try {
+            javax.swing.table.DefaultTableModel modelo =
+                (javax.swing.table.DefaultTableModel) tabelaLivros.getModel();
+            modelo.setRowCount(0);
+
+            for (models.Livro l : livroDAO.listarLivros()) {
+                modelo.addRow(new Object[]{
+                    l.getIsbn(), l.getTitulo(), l.getAutor(),
+                    l.getAnoPublicacao(), l.getNumeroCopias(), l.getDisponiveis()
+                });
+            }
+        } catch (java.sql.SQLException e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Erro ao carregar livros: " + e.getMessage(),
+                "Erro", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         int row = tabelaLivros.getSelectedRow();
     if (row < 0) {
@@ -237,60 +267,115 @@ public class LivroView extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        JDialog dialog = new JDialog();
+        javax.swing.JDialog dialog = new javax.swing.JDialog();
         dialog.setTitle("Novo Livro");
-        dialog.setSize(400, 350);
-        dialog.setModal(true); 
+        dialog.setSize(400, 320);
+        dialog.setModal(true);
         dialog.setLocationRelativeTo(this);
 
-        JPanel painel = new JPanel(new GridLayout(6, 2, 10, 10));
-        painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        javax.swing.JPanel painel = new javax.swing.JPanel(new java.awt.GridLayout(6, 2, 10, 10));
+        painel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        painel.add(new JLabel("ISBN:")); JTextField fIsbn = new JTextField(); painel.add(fIsbn);
-        painel.add(new JLabel("Título:")); JTextField fTitulo = new JTextField(); painel.add(fTitulo);
-        painel.add(new JLabel("Autor:")); JTextField fAutor = new JTextField(); painel.add(fAutor);
-        painel.add(new JLabel("Ano:")); JTextField fAno = new JTextField(); painel.add(fAno);
-        painel.add(new JLabel("Cópias:")); JTextField fCopias = new JTextField(); painel.add(fCopias);
+        javax.swing.JTextField fIsbn   = new javax.swing.JTextField();
+        javax.swing.JTextField fTitulo = new javax.swing.JTextField();
+        javax.swing.JTextField fAutor  = new javax.swing.JTextField();
+        javax.swing.JTextField fAno    = new javax.swing.JTextField();
+        javax.swing.JTextField fCopias = new javax.swing.JTextField();
 
-        JButton btnSalvar = new JButton("Salvar");
+        painel.add(new javax.swing.JLabel("ISBN:"));   painel.add(fIsbn);
+        painel.add(new javax.swing.JLabel("Título:")); painel.add(fTitulo);
+        painel.add(new javax.swing.JLabel("Autor:"));  painel.add(fAutor);
+        painel.add(new javax.swing.JLabel("Ano:"));    painel.add(fAno);
+        painel.add(new javax.swing.JLabel("Cópias:")); painel.add(fCopias);
+
+        javax.swing.JButton btnSalvar = new javax.swing.JButton("Salvar");
+        btnSalvar.setBackground(new java.awt.Color(67, 97, 238));
+        btnSalvar.setForeground(java.awt.Color.WHITE);
+        btnSalvar.setBorderPainted(false);
+
         btnSalvar.addActionListener(e -> {
-            // Aqui vai chamar o listener/controller futuramente
-            dialog.dispose();
+            if (fIsbn.getText().trim().isEmpty() || fTitulo.getText().trim().isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "ISBN e Título são obrigatórios!", "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                int ano    = Integer.parseInt(fAno.getText().trim());
+                int copias = Integer.parseInt(fCopias.getText().trim());
+
+                // Usa o Controller — ele valida permissão e chama o DAO
+                boolean sucesso = livroController.cadastrarLivro(
+                    usuarioLogado,
+                    fIsbn.getText().trim(),
+                    fTitulo.getText().trim(),
+                    fAutor.getText().trim(),
+                    ano, copias
+                );
+
+                if (sucesso) {
+                    carregarTabela();
+                    javax.swing.JOptionPane.showMessageDialog(dialog,
+                        "Livro cadastrado!", "Sucesso",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    dialog.dispose();
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(dialog,
+                        "Sem permissão ou dados inválidos.", "Erro",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException ex) {
+                javax.swing.JOptionPane.showMessageDialog(dialog,
+                    "Ano e Cópias devem ser números!", "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
         });
 
-        painel.add(new JLabel());
+        painel.add(new javax.swing.JLabel());
         painel.add(btnSalvar);
-
         dialog.add(painel);
         dialog.setVisible(true);
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-
-        int row = tabelaLivros.getSelectedRow();
+    int row = tabelaLivros.getSelectedRow();
         if (row < 0) {
-            JOptionPane.showMessageDialog(this,
-                "Selecione um livro para excluir.", "Aviso",
-                JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Selecione um livro.", "Aviso",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        javax.swing.table.DefaultTableModel modelo =
-            (javax.swing.table.DefaultTableModel) tabelaLivros.getModel();
+        String isbn   = tabelaLivros.getModel().getValueAt(row, 0).toString();
+        String titulo = tabelaLivros.getModel().getValueAt(row, 1).toString();
 
-        String titulo = (String) modelo.getValueAt(row, 1);
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+            "Excluir \"" + titulo + "\"?", "Confirmar",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.WARNING_MESSAGE);
 
-        int confirm = JOptionPane.showConfirmDialog(this,
-            "Deseja excluir o livro \"" + titulo + "\"?",
-            "Confirmar Exclusão",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            modelo.removeRow(row);
-            JOptionPane.showMessageDialog(this,
-                "Livro excluído com sucesso!", "Sucesso",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                models.Livro livro = livroDAO.buscarPorIsbn(isbn);
+                if (livro != null) {
+                    boolean sucesso = livroController.removerLivro(usuarioLogado, livro);
+                    if (sucesso) {
+                        livroDAO.excluirLivro(livro);
+                        carregarTabela();
+                        javax.swing.JOptionPane.showMessageDialog(this,
+                            "Livro excluído!", "Sucesso",
+                            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        javax.swing.JOptionPane.showMessageDialog(this,
+                            "Sem permissão para excluir.", "Erro",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } catch (java.sql.SQLException ex) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Erro: " + ex.getMessage(), "Erro",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
 

@@ -32,6 +32,13 @@ public class EmprestimoView extends javax.swing.JPanel {
         estilizarCabecalho();
         estilizarPagina();
     }
+    
+     private dao.EmprestimoDAO emprestimDAO = new dao.EmprestimoDAO();
+        private models.Usuario usuarioLogado;
+
+        public void setUsuarioLogado(models.Usuario usuario) {
+            this.usuarioLogado = usuario;
+        }
 
     private void estilizarPagina() {
         setBackground(new java.awt.Color(247, 248, 250));

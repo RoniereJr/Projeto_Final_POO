@@ -24,6 +24,10 @@ public class LoginView extends javax.swing.JFrame {
         initComponents();
     }
     
+    private dao.UsuarioDAO usuarioDAO = new dao.UsuarioDAO();
+    private dao.BibliotecarioDAO bibliotecarioDAO = new dao.BibliotecarioDAO();
+    private dao.MembroDAO membroDAO = new dao.MembroDAO();
+    
     
 
     /**
@@ -108,20 +112,54 @@ public class LoginView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }// GEN-LAST:event_campoLoginActionPerformed
 
-    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnEntrarActionPerformed
+    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {
         String login = campoLogin.getText().trim();
         String senha = new String(campoSenha.getPassword()).trim();
 
         if (login.isEmpty() || senha.isEmpty()) {
-            lblErro.setForeground(Color.RED);
+            lblErro.setForeground(java.awt.Color.RED);
             lblErro.setText("Preencha login e senha.");
             return;
         }
 
-        MainView mainView = new MainView();
-        mainView.configurarUsuario("João Silva", "SUPERVISOR"); // depois vem do Controller
-        mainView.setVisible(true);
-        dispose(); 
+        try {
+            boolean autenticado = usuarioDAO.autenticar(login, senha);
+            if (!autenticado) {
+                lblErro.setForeground(java.awt.Color.RED);
+                lblErro.setText("Login ou senha incorretos.");
+                return;
+            }
+
+            for (models.Bibliotecario b : bibliotecarioDAO.listarBibliotecarios()) {
+                if (b.getLogin().equals(login)) {
+                    MainView mainView = new MainView();
+                    mainView.configurarUsuario(b.getNome(), b.getCargo().name(), b);
+                    mainView.setVisible(true);
+                    dispose();
+                    return;
+                }
+            }
+
+            for (models.Membro m : membroDAO.listarMembros()) {
+                if (m.getLogin().equals(login)) {
+                    AreaMembroView areaMembro = new AreaMembroView();
+                    areaMembro.setMembro(m);
+                    javax.swing.JFrame janela = new javax.swing.JFrame("Área do Membro");
+                    janela.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+                    janela.setSize(1100, 680);
+                    janela.add(areaMembro);
+                    janela.setLocationRelativeTo(null);
+                    janela.setVisible(true);
+                    dispose();
+                    return;
+                }
+            }
+
+        } catch (java.sql.SQLException e) {
+            lblErro.setForeground(java.awt.Color.RED);
+            lblErro.setText("Erro ao conectar ao banco.");
+            e.printStackTrace();
+        }
     }
 
     private void campoSenhaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_campoSenhaActionPerformed

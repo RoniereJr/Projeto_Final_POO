@@ -21,7 +21,7 @@ public class MembroDAO {
                 rs.getInt("ativo") == 1,
                 rs.getString("endereco"),
                 rs.getString("telefone"),
-                rs.getString("email"));
+                rs.getString("email")) {};
     }
 
     public Membro criarMembro(String nome, String cpf, String login, String senha,
@@ -47,7 +47,7 @@ public class MembroDAO {
             psM.executeUpdate();
 
             con.commit();
-            return new Membro(nome, cpf, login, senha, true, endereco, telefone, email);
+            return new Membro(nome, cpf, login, senha, true, endereco, telefone, email) {};
         } catch (SQLException e) {
             con.rollback();
             throw e;

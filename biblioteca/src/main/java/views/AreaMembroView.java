@@ -4,6 +4,8 @@
  */
 package views;
 
+import models.Membro;
+
 /**
  *
  * @author ronierejr
@@ -124,4 +126,10 @@ public class AreaMembroView extends javax.swing.JPanel {
     private javax.swing.JTable tabelaAcervo;
     private javax.swing.JTable tabelaMeusEmprestimos;
     // End of variables declaration//GEN-END:variables
+
+    void setMembro(Membro m) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    
 }

@@ -50,15 +50,22 @@ public class MainView extends javax.swing.JFrame {
         card.show(painelConteudo, "livros");
     }
     
-    public void configurarUsuario(String nome, String cargo) {
+    private models.Usuario usuarioLogado;
+
+    public void configurarUsuario(String nome, String cargo, models.Usuario usuario) {
+        this.usuarioLogado = usuario;
         lblNomeUsuario.setText(nome);
         lblCargo.setText(cargo);
+        btnBibliotecarios.setVisible("SUPERVISOR".equals(cargo));
 
-        btnBibliotecarios.setVisible("SUPERVISOR".equalsIgnoreCase(cargo));
+        livroView.setUsuarioLogado(usuario);
+        membroView.setUsuarioLogado(usuario);
+        bibliotecarioView.setUsuarioLogado(usuario);
+        emprestimoView.setUsuarioLogado(usuario);
     }
     
     private void estilizarSidebar() {
-    
+        
     painelSidebar.setPreferredSize(new java.awt.Dimension(160, 0));
     painelSidebar.setBackground(new java.awt.Color(26, 26, 46));
     lblNomeUsuario.setForeground(java.awt.Color.WHITE);
@@ -76,21 +83,28 @@ public class MainView extends javax.swing.JFrame {
 }
 
     private void estilizarBotaoNav(javax.swing.JButton btn) {
-        btn.setBackground(new java.awt.Color(26, 26, 46));
-        btn.setForeground(new java.awt.Color(203, 213, 224));
-        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
-        btn.setBorderPainted(false);
+        setBackground(new java.awt.Color(26, 26, 46));
+        btn.setPreferredSize(new java.awt.Dimension(140, 45)); 
+        btn.setMaximumSize(new java.awt.Dimension(140, 45));
+
+        btn.setBackground(new java.awt.Color(240, 240, 240)); // Fundo claro
+        btn.setForeground(new java.awt.Color(26, 26, 46));    // Texto escuro
+
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
+        btn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200), 1));
         btn.setFocusPainted(false);
+        btn.setContentAreaFilled(true);
+        btn.setOpaque(true);
         btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                btn.setForeground(java.awt.Color.WHITE);
+                btn.setBackground(new java.awt.Color(220, 220, 220));
             }
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                btn.setForeground(new java.awt.Color(203, 213, 224));
+                btn.setBackground(new java.awt.Color(240, 240, 240));
             }
         });
     }
@@ -132,10 +146,13 @@ public class MainView extends javax.swing.JFrame {
 
         btnMembros.setFont(new java.awt.Font("Adwaita Sans", 0, 13)); // NOI18N
         btnMembros.setText(" Membros");
+        btnMembros.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnMembros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnMembros.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         btnBibliotecarios.setFont(new java.awt.Font("Adwaita Sans", 0, 13)); // NOI18N
         btnBibliotecarios.setText("Bibliotecários");
+        btnBibliotecarios.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         btnBibliotecarios.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnBibliotecarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,6 +222,7 @@ public class MainView extends javax.swing.JFrame {
 
         getContentPane().add(painelSidebar, java.awt.BorderLayout.WEST);
 
+        painelConteudo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         painelConteudo.setLayout(new java.awt.CardLayout());
         getContentPane().add(painelConteudo, java.awt.BorderLayout.CENTER);
 
