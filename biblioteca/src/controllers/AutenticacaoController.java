@@ -4,43 +4,34 @@ import models.Usuario;
 
 public class AutenticacaoController {
 
-    private Usuario usuarioLogado;
+    private boolean logado = false;
 
-    /**
-     valida as credenciais chamando o método estático da Model.
-     */
-    public Usuario login(String login, String senha) {
-        // validação de parâmetros
+    public boolean login(String login, String senha) {
         if (login == null || senha == null || login.trim().isEmpty() || senha.trim().isEmpty()) {
             System.out.println("Erro: Login e senha não podem estar vazios.");
-            return null;
+            return false;
         }
 
-        // chama o método estático da MODEL Usuario
-        Usuario usuario = Usuario.autenticar(login, senha);
+        
+        boolean sucesso = Usuario.autenticar(login, senha);
 
-        if (usuario == null) {
-            System.out.println("Erro: Login/senha incorretos ou conta desativada.");
-            return null;
+        if (!sucesso) {
+            System.out.println("Erro: Login ou senha incorretos.");
+            this.logado = false;
+            return false;
         }
 
-        // gerenciamento do estado da sessão local
-        this.usuarioLogado = usuario;
-        System.out.println(">> Login efetuado com sucesso. Bem-vindo, " + usuario.getNome() + "!");
-        return usuario;
+        this.logado = true;
+        System.out.println(">> Login efetuado com sucesso via Model!");
+        return true;
     }
 
-    /**
-      encerra a sessão do usuário.
-     */
     public void logout() {
-        if (this.usuarioLogado != null) {
-            System.out.println(">> Sessão encerrada para o utilizador: " + this.usuarioLogado.getLogin());
-            this.usuarioLogado = null;
-        }
+        this.logado = false;
+        System.out.println(">> Sessão encerrada.");
     }
 
-    public Usuario getUsuarioLogado() {
-        return usuarioLogado;
+    public boolean isLogado() {
+        return logado;
     }
 }
