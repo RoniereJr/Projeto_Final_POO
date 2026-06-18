@@ -22,7 +22,7 @@ public class Emprestimo {
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucaoPrevista = dataDevolucaoPrevista;
         this.dataDevolucaoReal = dataDevolucaoReal;
-        this.devolvido = devolvido;
+        this.devolvido = false;
     }
 
     public Emprestimo(Livro livro, Membro membro, LocalDate dataEmprestimo, LocalDate dataDevolucaoPrevista) {
