@@ -12,7 +12,7 @@ import models.Usuario;
 
 public class EmprestimoController {
 
-    private java.io.Serializable dao = new EmprestimoDAO();
+    private EmprestimoDAO dao = new EmprestimoDAO();
 
     public boolean realizarEmprestimo(Usuario usuarioLogado, Livro livro, Membro membro) {
         if (!(usuarioLogado instanceof Bibliotecario)) {
@@ -34,7 +34,6 @@ public class EmprestimoController {
             System.out.println("Erro: Membro está suspenso.");
             return false;
         }
-        
         List<Emprestimo> ativos = Emprestimo.listarEmprestimosAtivosPorMembro(membro);
         boolean jaTem = ativos.stream()
                 .anyMatch(e -> e.getLivro().getIsbn().equals(livro.getIsbn()));
@@ -83,7 +82,7 @@ public class EmprestimoController {
         alvo.registrarDevolucao();
 
         try {
-            int diasAtraso = ((EmprestimoDAO) dao).registrarDevolucao(
+            int diasAtraso = dao.registrarDevolucao(
                     alvo.getLivro().getIsbn(),
                     alvo.getMembro().getCpf(),
                     alvo.getDataEmprestimo());
@@ -97,6 +96,36 @@ public class EmprestimoController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean editarEmprestimo(Usuario usuarioLogado, Emprestimo emprestimo,
+            LocalDate dataEmprestimo, LocalDate dataPrevista,
+            LocalDate dataReal, boolean devolvido) {
+        if (!(usuarioLogado instanceof Bibliotecario)) {
+            System.out.println("Erro: Apenas bibliotecários podem editar empréstimos.");
+            return false;
+        }
+        if (emprestimo == null) {
+            System.out.println("Erro: Empréstimo inválido.");
+            return false;
+        }
+        Emprestimo.editarEmprestimo(emprestimo, dataEmprestimo, dataPrevista, dataReal, devolvido);
+        System.out.println(">> Empréstimo editado.");
+        return true;
+    }
+
+    public boolean excluirEmprestimo(Usuario usuarioLogado, Emprestimo emprestimo) {
+        if (!(usuarioLogado instanceof Bibliotecario)) {
+            System.out.println("Erro: Apenas bibliotecários podem excluir empréstimos.");
+            return false;
+        }
+        if (emprestimo == null) {
+            System.out.println("Erro: Empréstimo inválido.");
+            return false;
+        }
+        Emprestimo.excluirEmprestimo(emprestimo);
+        System.out.println(">> Empréstimo excluído.");
+        return true;
     }
 
     public List<Emprestimo> listarEmprestimos() {

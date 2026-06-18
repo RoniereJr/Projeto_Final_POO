@@ -20,7 +20,6 @@ public class MembroController {
             System.out.println("Erro: Dados obrigatórios ausentes.");
             return false;
         }
-        
         Membro novo = Membro.criarMembro(nome, cpf, login, senha, endereco, telefone, email);
         if (novo != null) {
             System.out.println(">> Membro cadastrado.");
@@ -49,7 +48,6 @@ public class MembroController {
             System.out.println("Erro: Apenas bibliotecários podem desativar membros.");
             return false;
         }
-        
         Usuario.desativarUsuario(membro);
         System.out.println(">> Membro desativado.");
         return true;

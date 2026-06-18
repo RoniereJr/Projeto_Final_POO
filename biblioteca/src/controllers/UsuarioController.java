@@ -20,11 +20,11 @@ public class UsuarioController {
             System.out.println("Erro: Apenas SUPERVISORES podem editar bibliotecários.");
             return false;
         }
-        
         Usuario.editarUsuario(usuarioAlvo, nome, cpf, login, senha, ativo);
         System.out.println(">> Usuário editado.");
         return true;
     }
+
     public boolean desativarUsuario(Usuario usuarioLogado, Usuario usuarioAlvo) {
         if (!(usuarioLogado instanceof Bibliotecario)) {
             System.out.println("Erro: Apenas bibliotecários podem desativar contas.");
@@ -36,7 +36,6 @@ public class UsuarioController {
             System.out.println("Erro: Apenas SUPERVISORES podem desativar bibliotecários.");
             return false;
         }
-        
         Usuario.desativarUsuario(usuarioAlvo);
         System.out.println(">> Conta desativada.");
         return true;

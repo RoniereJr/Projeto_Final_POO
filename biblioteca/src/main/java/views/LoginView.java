@@ -9,7 +9,14 @@
  */
 package views;
 
+import controllers.AutenticacaoController;
+import models.Bibliotecario;
+import models.Membro;
+import models.Usuario;
+
 import java.awt.Color;
+
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class LoginView extends javax.swing.JFrame {
@@ -23,8 +30,8 @@ public class LoginView extends javax.swing.JFrame {
     public LoginView() {
         initComponents();
     }
-    
-    
+
+    private AutenticacaoController authController = new AutenticacaoController();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,7 +40,8 @@ public class LoginView extends javax.swing.JFrame {
      */
 
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         lblTitulo = new javax.swing.JLabel();
@@ -65,41 +73,46 @@ public class LoginView extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lblTitulo)
-                    .addComponent(lblLogin)
-                    .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSenha)
-                    .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblErro))
-                .addContainerGap(94, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(86, 86, 86)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                        .addComponent(lblTitulo)
+                                        .addComponent(lblLogin)
+                                        .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 240,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblSenha)
+                                        .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 165,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 240,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblErro))
+                                .addContainerGap(94, Short.MAX_VALUE)));
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnEntrar, campoLogin, campoSenha});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL,
+                new java.awt.Component[] { btnEntrar, campoLogin, campoSenha });
 
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addComponent(lblTitulo)
-                .addGap(53, 53, 53)
-                .addComponent(lblLogin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblSenha)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(btnEntrar)
-                .addGap(46, 46, 46)
-                .addComponent(lblErro, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(92, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addComponent(lblTitulo)
+                                .addGap(53, 53, 53)
+                                .addComponent(lblLogin)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(campoLogin, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblSenha)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(campoSenha, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(btnEntrar)
+                                .addGap(46, 46, 46)
+                                .addComponent(lblErro, javax.swing.GroupLayout.PREFERRED_SIZE, 17,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(92, Short.MAX_VALUE)));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -108,20 +121,42 @@ public class LoginView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }// GEN-LAST:event_campoLoginActionPerformed
 
-    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnEntrarActionPerformed
+    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {
         String login = campoLogin.getText().trim();
         String senha = new String(campoSenha.getPassword()).trim();
 
         if (login.isEmpty() || senha.isEmpty()) {
-            lblErro.setForeground(Color.RED);
+            lblErro.setForeground(java.awt.Color.RED);
             lblErro.setText("Preencha login e senha.");
             return;
         }
 
-        MainView mainView = new MainView();
-        mainView.configurarUsuario("João Silva", "SUPERVISOR"); // depois vem do Controller
-        mainView.setVisible(true);
-        dispose(); 
+        Usuario usuario = authController.login(login, senha);
+        if (usuario == null) {
+            lblErro.setForeground(java.awt.Color.RED);
+            lblErro.setText("Login ou senha incorretos.");
+            return;
+        }
+
+        if (usuario instanceof Bibliotecario) {
+            Bibliotecario bib = (Bibliotecario) usuario;
+            MainView mainView = new MainView();
+            mainView.configurarUsuario(bib.getNome(), bib.getCargo().name(), bib);
+            mainView.setVisible(true);
+            dispose();
+        } else if (usuario instanceof Membro) {
+            AreaMembroView areaMembro = new AreaMembroView();
+            areaMembro.setMembro((Membro) usuario);
+            JFrame janela = new JFrame("Área do Membro");
+            janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            janela.setSize(1100, 680);
+            janela.add(areaMembro);
+            janela.setLocationRelativeTo(null);
+            janela.setVisible(true);
+            dispose();
+        } else {
+            lblErro.setText("Tipo de usuário desconhecido.");
+        }
     }
 
     private void campoSenhaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_campoSenhaActionPerformed

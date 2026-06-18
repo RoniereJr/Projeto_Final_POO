@@ -8,8 +8,6 @@ import java.util.List;
 
 public class LivroDAO {
 
-    private final BibliotecaFactory factory = BibliotecaFactory.getInstance();
-
     private Livro mapear(ResultSet rs) throws SQLException {
         return new Livro(
                 rs.getString("isbn"),
@@ -25,7 +23,7 @@ public class LivroDAO {
             throws SQLException {
         String sql = "INSERT INTO livros (isbn, titulo, autor, anoPublicacao, numeroCopias, disponiveis) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, isbn);
             ps.setString(2, titulo);
@@ -40,7 +38,7 @@ public class LivroDAO {
 
     public Livro buscarPorIsbn(String isbn) throws SQLException {
         String sql = "SELECT * FROM livros WHERE isbn = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, isbn);
             try (ResultSet rs = ps.executeQuery()) {
@@ -54,7 +52,7 @@ public class LivroDAO {
     public List<Livro> listarLivros() throws SQLException {
         String sql = "SELECT * FROM livros ORDER BY titulo";
         List<Livro> lista = new ArrayList<>();
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next())
@@ -67,7 +65,7 @@ public class LivroDAO {
             int anoPublicacao, int numeroCopias, int disponiveis) throws SQLException {
         String sql = "UPDATE livros SET titulo=?, autor=?, anoPublicacao=?, numeroCopias=?, disponiveis=? " +
                 "WHERE isbn=?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, titulo);
             ps.setString(2, autor);
@@ -81,7 +79,7 @@ public class LivroDAO {
 
     public void excluirLivro(Livro livro) throws SQLException {
         String sql = "DELETE FROM livros WHERE isbn = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, livro.getIsbn());
             ps.executeUpdate();
@@ -91,7 +89,7 @@ public class LivroDAO {
     public void adicionarCopias(Livro livro, int quantidade) throws SQLException {
         String sql = "UPDATE livros SET numeroCopias = numeroCopias + ?, " +
                 "disponiveis = disponiveis + ? WHERE isbn = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, quantidade);
             ps.setInt(2, quantidade);
@@ -103,7 +101,7 @@ public class LivroDAO {
     public void removerCopias(Livro livro, int quantidade) throws SQLException {
         String sql = "UPDATE livros SET numeroCopias = numeroCopias - ?, " +
                 "disponiveis = disponiveis - ? WHERE isbn = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, quantidade);
             ps.setInt(2, quantidade);

@@ -10,8 +10,6 @@ import java.util.List;
 
 public class MembroDAO {
 
-    private final BibliotecaFactory factory = BibliotecaFactory.getInstance();
-
     private Membro mapear(ResultSet rs) throws SQLException {
         return new Membro(
                 rs.getString("nome"),
@@ -29,7 +27,7 @@ public class MembroDAO {
         String sqlU = "INSERT INTO usuarios (cpf, nome, login, senha, ativo) VALUES (?, ?, ?, ?, 1)";
         String sqlM = "INSERT INTO membros (cpf, endereco, telefone, email) VALUES (?, ?, ?, ?)";
 
-        Connection con = factory.getConnection();
+        Connection con = BibliotecaFactory.getConnection();
         con.setAutoCommit(false);
         try (PreparedStatement psU = con.prepareStatement(sqlU);
                 PreparedStatement psM = con.prepareStatement(sqlM)) {
@@ -59,7 +57,7 @@ public class MembroDAO {
     public Membro buscarPorCpf(String cpf) throws SQLException {
         String sql = "SELECT u.*, m.endereco, m.telefone, m.email " +
                 "FROM usuarios u JOIN membros m ON u.cpf = m.cpf WHERE u.cpf = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, cpf);
             try (ResultSet rs = ps.executeQuery()) {
@@ -74,7 +72,7 @@ public class MembroDAO {
         String sql = "SELECT u.*, m.endereco, m.telefone, m.email " +
                 "FROM usuarios u JOIN membros m ON u.cpf = m.cpf ORDER BY u.nome";
         List<Membro> lista = new ArrayList<>();
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next())
@@ -89,7 +87,7 @@ public class MembroDAO {
         String sqlU = "UPDATE usuarios SET nome=?, login=?, senha=?, ativo=? WHERE cpf=?";
         String sqlM = "UPDATE membros SET endereco=?, telefone=?, email=? WHERE cpf=?";
 
-        Connection con = factory.getConnection();
+        Connection con = BibliotecaFactory.getConnection();
         con.setAutoCommit(false);
         try (PreparedStatement psU = con.prepareStatement(sqlU);
                 PreparedStatement psM = con.prepareStatement(sqlM)) {
@@ -131,7 +129,7 @@ public class MembroDAO {
         String sql = "SELECT dataDevolucaoPrevista, dataDevolucaoReal " +
                 "FROM emprestimos WHERE membro_cpf = ? AND devolvido = 1 " +
                 "AND dataDevolucaoReal > dataDevolucaoPrevista";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, cpf);
             try (ResultSet rs = ps.executeQuery()) {
