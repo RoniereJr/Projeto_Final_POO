@@ -33,7 +33,7 @@ public class AutenticacaoController {
     public void logout() {
         if (usuarioLogado != null) {
             System.out.println(">> Sessão encerrada para: " + usuarioLogado.getLogin());
-            usuarioLogado = null; // Remove o usuário da sessão
+            usuarioLogado = null;
         }
     }
 

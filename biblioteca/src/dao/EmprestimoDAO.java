@@ -1,17 +1,18 @@
 package dao;
 
-import models.Emprestimo;
-import models.Livro;
-import models.Membro;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmprestimoDAO {
+import models.Emprestimo;
+import models.Livro;
+import models.Membro;
 
-    private final BibliotecaFactory factory = BibliotecaFactory.getInstance();
+public class EmprestimoDAO {
 
     private Emprestimo mapear(ResultSet rs) throws SQLException {
         Livro livro = new Livro(
@@ -48,7 +49,7 @@ public class EmprestimoDAO {
         LocalDate hoje = LocalDate.now();
         LocalDate prevista = hoje.plusDays(14);
 
-        Connection con = factory.getConnection();
+        Connection con = BibliotecaFactory.getConnection();
         con.setAutoCommit(false);
         try (PreparedStatement psE = con.prepareStatement(sqlEmp);
                 PreparedStatement psL = con.prepareStatement(sqlLivro)) {
@@ -78,7 +79,7 @@ public class EmprestimoDAO {
         String sql = "UPDATE emprestimos SET dataEmprestimo = ?, dataDevolucaoPrevista = ?, " +
                 "dataDevolucaoReal = ?, devolvido = ? " +
                 "WHERE livro_isbn = ? AND membro_cpf = ? AND dataEmprestimo = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, novaDataEmprestimo.toString());
             ps.setString(2, novaDataPrevista.toString());
@@ -93,7 +94,7 @@ public class EmprestimoDAO {
 
     public void excluirEmprestimo(String livroIsbn, String membroCpf, LocalDate dataEmprestimo) throws SQLException {
         String sql = "DELETE FROM emprestimos WHERE livro_isbn = ? AND membro_cpf = ? AND dataEmprestimo = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, livroIsbn);
             ps.setString(2, membroCpf);
@@ -105,7 +106,7 @@ public class EmprestimoDAO {
     public int registrarDevolucao(String livroIsbn, String membroCpf, LocalDate dataEmprestimo) throws SQLException {
         String sqlSelect = "SELECT dataDevolucaoPrevista FROM emprestimos WHERE livro_isbn = ? AND membro_cpf = ? AND dataEmprestimo = ? AND devolvido = 0";
         LocalDate dataPrevista;
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sqlSelect)) {
             ps.setString(1, livroIsbn);
             ps.setString(2, membroCpf);
@@ -126,7 +127,7 @@ public class EmprestimoDAO {
                 "WHERE livro_isbn = ? AND membro_cpf = ? AND dataEmprestimo = ?";
         String sqlLivro = "UPDATE livros SET disponiveis = disponiveis + 1 WHERE isbn = ?";
 
-        Connection con = factory.getConnection();
+        Connection con = BibliotecaFactory.getConnection();
         con.setAutoCommit(false);
         try (PreparedStatement psU = con.prepareStatement(sqlUpdate);
                 PreparedStatement psL = con.prepareStatement(sqlLivro)) {
@@ -152,45 +153,56 @@ public class EmprestimoDAO {
     }
 
     private List<Emprestimo> executarListaCompleta(String sql, Object... params) throws SQLException {
-        String joinSql = sql.replace("SELECT *",
-                "SELECT e.*, " +
-                        "l.titulo AS livro_titulo, l.autor AS livro_autor, l.anoPublicacao AS livro_anoPublicacao, " +
-                        "l.numeroCopias AS livro_numeroCopias, l.disponiveis AS livro_disponiveis, " +
-                        "u.nome AS membro_nome, u.cpf AS membro_cpf, u.login AS membro_login, " +
-                        "u.senha AS membro_senha, u.ativo AS membro_ativo, " +
-                        "m.endereco AS membro_endereco, m.telefone AS membro_telefone, m.email AS membro_email ");
-
-        if (sql.contains("FROM emprestimos")) {
-            joinSql = joinSql.replace("FROM emprestimos",
-                    "FROM emprestimos e " +
-                            "JOIN livros l ON e.livro_isbn = l.isbn " +
-                            "JOIN membros m ON e.membro_cpf = m.cpf " +
-                            "JOIN usuarios u ON m.cpf = u.cpf");
+        String whereClause = "";
+        String orderClause = "";
+        int whereIdx = sql.indexOf("WHERE");
+        if (whereIdx != -1) {
+            whereClause = sql.substring(whereIdx);
+            int orderIdx = whereClause.indexOf("ORDER BY");
+            if (orderIdx != -1) {
+                orderClause = whereClause.substring(orderIdx);
+                whereClause = whereClause.substring(0, orderIdx);
+            }
+        } else {
+            int orderIdx = sql.indexOf("ORDER BY");
+            if (orderIdx != -1) {
+                orderClause = sql.substring(orderIdx);
+            }
         }
 
-        if (sql.contains("WHERE")) {
-            joinSql += sql.substring(sql.indexOf("WHERE"));
+        String joinSql = "SELECT e.*, " +
+                "l.titulo AS livro_titulo, l.autor AS livro_autor, " +
+                "l.anoPublicacao AS livro_anoPublicacao, l.numeroCopias AS livro_numeroCopias, " +
+                "l.disponiveis AS livro_disponiveis, " +
+                "u.nome AS membro_nome, u.cpf AS membro_cpf, u.login AS membro_login, " +
+                "u.senha AS membro_senha, u.ativo AS membro_ativo, " +
+                "m.endereco AS membro_endereco, m.telefone AS membro_telefone, m.email AS membro_email " +
+                "FROM emprestimos e " +
+                "JOIN livros l ON e.livro_isbn = l.isbn " +
+                "JOIN membros m ON e.membro_cpf = m.cpf " +
+                "JOIN usuarios u ON m.cpf = u.cpf";
+
+        if (!whereClause.isEmpty()) {
+            joinSql += " " + whereClause;
+        }
+        if (!orderClause.isEmpty()) {
+            joinSql += " " + orderClause;
         }
 
-        if (sql.contains("ORDER BY")) {
-            joinSql += " " + sql.substring(sql.indexOf("ORDER BY"));
-        }
-
-        List<Emprestimo> lista = new ArrayList<>();
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(joinSql)) {
             for (int i = 0; i < params.length; i++) {
                 ps.setObject(i + 1, params[i]);
             }
             try (ResultSet rs = ps.executeQuery()) {
+                List<Emprestimo> lista = new ArrayList<>();
                 while (rs.next()) {
                     lista.add(mapear(rs));
                 }
+                return lista;
             }
         }
-        return lista;
     }
-
 
     public List<Emprestimo> listarEmprestimosPorMembro(Membro membro) throws SQLException {
         String sql = "SELECT * FROM emprestimos WHERE membro_cpf = ? ORDER BY dataEmprestimo DESC";

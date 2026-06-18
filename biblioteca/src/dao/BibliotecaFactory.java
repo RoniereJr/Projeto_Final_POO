@@ -6,7 +6,7 @@ public class BibliotecaFactory {
 
     private static final String DATABASE_URL = "jdbc:sqlite:database/biblioteca.db";
     private static BibliotecaFactory instance;
-    private Connection connection;
+    private static Connection connection;
 
     private BibliotecaFactory() {
         criarBancoDeDados();
@@ -76,11 +76,16 @@ public class BibliotecaFactory {
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(DATABASE_URL);
+            try {
+                // Força o carregamento do driver
+                Class.forName("org.sqlite.JDBC");
+                connection = DriverManager.getConnection(DATABASE_URL);
+            } catch (ClassNotFoundException e) {
+                throw new SQLException("Driver SQLite não encontrado!", e);
+            }
         }
-
         return connection;
     }
 

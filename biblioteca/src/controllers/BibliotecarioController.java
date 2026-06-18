@@ -22,7 +22,6 @@ public class BibliotecarioController {
             System.out.println("Erro: Todos os campos são obrigatórios.");
             return false;
         }
-        
         Bibliotecario novo = Bibliotecario.criarBibliotecario(nome, cpf, login, senha, cargo);
         if (novo != null) {
             System.out.println(">> Bibliotecário cadastrado.");
@@ -40,7 +39,7 @@ public class BibliotecarioController {
             System.out.println("Erro: Apenas SUPERVISORES podem editar bibliotecários.");
             return false;
         }
-        
+        // A Model tem método estático editarBibliotecario (que recebe o objeto)
         Bibliotecario.editarBibliotecario(bibliotecario, nome, bibliotecario.getCpf(),
                 login, senha, ativo, cargo);
         System.out.println(">> Bibliotecário editado.");
@@ -53,7 +52,6 @@ public class BibliotecarioController {
             System.out.println("Erro: Apenas SUPERVISORES podem desativar bibliotecários.");
             return false;
         }
-        
         Usuario.desativarUsuario(bibliotecario);
         System.out.println(">> Bibliotecário desativado.");
         return true;

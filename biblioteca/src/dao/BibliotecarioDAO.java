@@ -9,8 +9,6 @@ import java.util.List;
 
 public class BibliotecarioDAO {
 
-    private final BibliotecaFactory factory = BibliotecaFactory.getInstance();
-
     private Bibliotecario mapear(ResultSet rs) throws SQLException {
         return new Bibliotecario(
                 rs.getString("nome"),
@@ -26,7 +24,7 @@ public class BibliotecarioDAO {
         String sqlU = "INSERT INTO usuarios (cpf, nome, login, senha, ativo) VALUES (?, ?, ?, ?, 1)";
         String sqlB = "INSERT INTO bibliotecarios (cpf, cargo) VALUES (?, ?)";
 
-        Connection con = factory.getConnection();
+        Connection con = BibliotecaFactory.getConnection();
         con.setAutoCommit(false);
         try (PreparedStatement psU = con.prepareStatement(sqlU);
                 PreparedStatement psB = con.prepareStatement(sqlB)) {
@@ -54,7 +52,7 @@ public class BibliotecarioDAO {
     public Bibliotecario buscarPorCpf(String cpf) throws SQLException {
         String sql = "SELECT u.*, b.cargo FROM usuarios u " +
                 "JOIN bibliotecarios b ON u.cpf = b.cpf WHERE u.cpf = ?";
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, cpf);
             try (ResultSet rs = ps.executeQuery()) {
@@ -69,7 +67,7 @@ public class BibliotecarioDAO {
         String sql = "SELECT u.*, b.cargo FROM usuarios u " +
                 "JOIN bibliotecarios b ON u.cpf = b.cpf ORDER BY u.nome";
         List<Bibliotecario> lista = new ArrayList<>();
-        try (Connection con = factory.getConnection();
+        try (Connection con = BibliotecaFactory.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next())
@@ -84,7 +82,7 @@ public class BibliotecarioDAO {
         String sqlU = "UPDATE usuarios SET nome=?, login=?, senha=?, ativo=? WHERE cpf=?";
         String sqlB = "UPDATE bibliotecarios SET cargo=? WHERE cpf=?";
 
-        Connection con = factory.getConnection();
+        Connection con = BibliotecaFactory.getConnection();
         con.setAutoCommit(false);
         try (PreparedStatement psU = con.prepareStatement(sqlU);
                 PreparedStatement psB = con.prepareStatement(sqlB)) {

@@ -5,18 +5,19 @@
 package views;
 
 import java.awt.CardLayout;
+
 /**
  *
  * @author ronierejr
  */
 public class MainView extends javax.swing.JFrame {
-    
+
     private LivroView livroView = new LivroView();
     private MembroView membroView = new MembroView();
     private BibliotecarioView bibliotecarioView = new BibliotecarioView();
     private EmprestimoView emprestimoView = new EmprestimoView();
     private AreaMembroView areaMembroView = new AreaMembroView();
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainView.class.getName());
 
     /**
@@ -27,7 +28,7 @@ public class MainView extends javax.swing.JFrame {
         iniciarNavegacao();
         estilizarSidebar();
     }
-    
+
     private void iniciarNavegacao() {
         painelConteudo.add(livroView, "livros");
         painelConteudo.add(membroView, "membros");
@@ -37,10 +38,22 @@ public class MainView extends javax.swing.JFrame {
 
         CardLayout card = (CardLayout) painelConteudo.getLayout();
 
-        btnLivros.addActionListener(e -> card.show(painelConteudo, "livros"));
-        btnMembros.addActionListener(e -> card.show(painelConteudo, "membros"));
-        btnBibliotecarios.addActionListener(e -> card.show(painelConteudo, "bibliotecarios"));
-        btnEmprestimos.addActionListener(e -> card.show(painelConteudo, "emprestimos"));
+        btnLivros.addActionListener(e -> {
+            card.show(painelConteudo, "livros");
+            livroView.carregarTabela();
+        });
+        btnMembros.addActionListener(e -> {
+            card.show(painelConteudo, "membros");
+            membroView.carregarTabela();
+        });
+        btnBibliotecarios.addActionListener(e -> {
+            card.show(painelConteudo, "bibliotecarios");
+            bibliotecarioView.carregarTabela();
+        });
+        btnEmprestimos.addActionListener(e -> {
+            card.show(painelConteudo, "emprestimos");
+            emprestimoView.carregarTabela();
+        });
 
         btnSair.addActionListener(e -> {
             new LoginView().setVisible(true);
@@ -49,48 +62,63 @@ public class MainView extends javax.swing.JFrame {
 
         card.show(painelConteudo, "livros");
     }
-    
-    public void configurarUsuario(String nome, String cargo) {
+
+    private models.Usuario usuarioLogado;
+
+    public void configurarUsuario(String nome, String cargo, models.Usuario usuario) {
+        this.usuarioLogado = usuario;
         lblNomeUsuario.setText(nome);
         lblCargo.setText(cargo);
+        btnBibliotecarios.setVisible("SUPERVISOR".equals(cargo));
 
-        btnBibliotecarios.setVisible("SUPERVISOR".equalsIgnoreCase(cargo));
+        livroView.setUsuarioLogado(usuario);
+        membroView.setUsuarioLogado(usuario);
+        bibliotecarioView.setUsuarioLogado(usuario);
+        emprestimoView.setUsuarioLogado(usuario);
     }
-    
+
     private void estilizarSidebar() {
-    
-    painelSidebar.setPreferredSize(new java.awt.Dimension(160, 0));
-    painelSidebar.setBackground(new java.awt.Color(26, 26, 46));
-    lblNomeUsuario.setForeground(java.awt.Color.WHITE);
-    lblNomeUsuario.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
-    lblCargo.setForeground(new java.awt.Color(160, 174, 192));
-    lblCargo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
 
-    estilizarBotaoNav(btnMembros);
-    estilizarBotaoNav(btnBibliotecarios);
-    estilizarBotaoNav(btnEmprestimos);
-    estilizarBotaoNav(btnLivros);
+        painelSidebar.setPreferredSize(new java.awt.Dimension(160, 0));
+        painelSidebar.setBackground(new java.awt.Color(26, 26, 46));
+        lblNomeUsuario.setForeground(java.awt.Color.WHITE);
+        lblNomeUsuario.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
+        lblCargo.setForeground(new java.awt.Color(160, 174, 192));
+        lblCargo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 11));
 
-    estilizarBotaoNav(btnSair);
-    btnSair.setForeground(new java.awt.Color(252, 129, 129));
-}
+        estilizarBotaoNav(btnMembros);
+        estilizarBotaoNav(btnBibliotecarios);
+        estilizarBotaoNav(btnEmprestimos);
+        estilizarBotaoNav(btnLivros);
+
+        estilizarBotaoNav(btnSair);
+        btnSair.setForeground(new java.awt.Color(252, 129, 129));
+    }
 
     private void estilizarBotaoNav(javax.swing.JButton btn) {
-        btn.setBackground(new java.awt.Color(26, 26, 46));
-        btn.setForeground(new java.awt.Color(203, 213, 224));
-        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13));
-        btn.setBorderPainted(false);
+        setBackground(new java.awt.Color(26, 26, 46));
+        btn.setPreferredSize(new java.awt.Dimension(140, 45));
+        btn.setMaximumSize(new java.awt.Dimension(140, 45));
+
+        btn.setBackground(new java.awt.Color(240, 240, 240));
+        btn.setForeground(new java.awt.Color(26, 26, 46));
+
+        btn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
+        btn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200), 1));
         btn.setFocusPainted(false);
+        btn.setContentAreaFilled(true);
+        btn.setOpaque(true);
         btn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                btn.setForeground(java.awt.Color.WHITE);
+                btn.setBackground(new java.awt.Color(220, 220, 220));
             }
+
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                btn.setForeground(new java.awt.Color(203, 213, 224));
+                btn.setBackground(new java.awt.Color(240, 240, 240));
             }
         });
     }
@@ -101,7 +129,8 @@ public class MainView extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         painelSidebar = new javax.swing.JPanel();
@@ -132,10 +161,13 @@ public class MainView extends javax.swing.JFrame {
 
         btnMembros.setFont(new java.awt.Font("Adwaita Sans", 0, 13)); // NOI18N
         btnMembros.setText(" Membros");
+        btnMembros.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnMembros.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnMembros.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         btnBibliotecarios.setFont(new java.awt.Font("Adwaita Sans", 0, 13)); // NOI18N
         btnBibliotecarios.setText("Bibliotecários");
+        btnBibliotecarios.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         btnBibliotecarios.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnBibliotecarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,39 +195,40 @@ public class MainView extends javax.swing.JFrame {
         javax.swing.GroupLayout painelSidebarLayout = new javax.swing.GroupLayout(painelSidebar);
         painelSidebar.setLayout(painelSidebarLayout);
         painelSidebarLayout.setHorizontalGroup(
-            painelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelSidebarLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(painelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btnEmprestimos)
-                    .addComponent(btnBibliotecarios)
-                    .addComponent(btnLivros)
-                    .addComponent(btnSair)
-                    .addComponent(lblNomeUsuario)
-                    .addComponent(lblCargo)
-                    .addComponent(btnMembros))
-                .addGap(19, 19, 19))
-        );
+                painelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                painelSidebarLayout.createSequentialGroup()
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(painelSidebarLayout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                .addComponent(btnEmprestimos)
+                                                .addComponent(btnBibliotecarios)
+                                                .addComponent(btnLivros)
+                                                .addComponent(btnSair)
+                                                .addComponent(lblNomeUsuario)
+                                                .addComponent(lblCargo)
+                                                .addComponent(btnMembros))
+                                        .addGap(19, 19, 19)));
 
-        painelSidebarLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnBibliotecarios, btnEmprestimos, btnLivros, btnMembros, btnSair, lblCargo, lblNomeUsuario});
+        painelSidebarLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {
+                btnBibliotecarios, btnEmprestimos, btnLivros, btnMembros, btnSair, lblCargo, lblNomeUsuario });
 
         painelSidebarLayout.setVerticalGroup(
-            painelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(painelSidebarLayout.createSequentialGroup()
-                .addComponent(lblNomeUsuario)
-                .addGap(0, 0, 0)
-                .addComponent(lblCargo)
-                .addGap(0, 0, 0)
-                .addComponent(btnMembros)
-                .addGap(0, 0, 0)
-                .addComponent(btnBibliotecarios)
-                .addGap(0, 0, 0)
-                .addComponent(btnEmprestimos)
-                .addGap(0, 0, 0)
-                .addComponent(btnLivros)
-                .addGap(0, 0, 0)
-                .addComponent(btnSair))
-        );
+                painelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(painelSidebarLayout.createSequentialGroup()
+                                .addComponent(lblNomeUsuario)
+                                .addGap(0, 0, 0)
+                                .addComponent(lblCargo)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnMembros)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnBibliotecarios)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnEmprestimos)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnLivros)
+                                .addGap(0, 0, 0)
+                                .addComponent(btnSair)));
 
         btnMembros.getAccessibleContext().setAccessibleDescription("");
         btnBibliotecarios.getAccessibleContext().setAccessibleDescription("");
@@ -205,28 +238,33 @@ public class MainView extends javax.swing.JFrame {
 
         getContentPane().add(painelSidebar, java.awt.BorderLayout.WEST);
 
+        painelConteudo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         painelConteudo.setLayout(new java.awt.CardLayout());
         getContentPane().add(painelConteudo, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBibliotecariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBibliotecariosActionPerformed
+    private void btnBibliotecariosActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnBibliotecariosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBibliotecariosActionPerformed
+    }// GEN-LAST:event_btnBibliotecariosActionPerformed
 
-    private void btnLivrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLivrosActionPerformed
+    private void btnLivrosActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnLivrosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnLivrosActionPerformed
+    }// GEN-LAST:event_btnLivrosActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -238,7 +276,7 @@ public class MainView extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new MainView().setVisible(true));

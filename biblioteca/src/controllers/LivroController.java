@@ -1,11 +1,13 @@
 package controllers;
 
+
 import models.Usuario;
 import models.Bibliotecario;
 import models.Livro;
 import dao.LivroDAO;
 import java.sql.SQLException;
 import java.util.List;
+
 
 public class LivroController {
 
@@ -58,7 +60,6 @@ public class LivroController {
             System.out.println("Erro: Livro inválido.");
             return false;
         }
-        
         Livro.excluirLivro(livro);
         System.out.println(">> Livro removido.");
         return true;
@@ -73,11 +74,11 @@ public class LivroController {
             System.out.println("Erro: Parâmetros inválidos.");
             return false;
         }
-        
-        livro.adicionarCopias(quantidade); 
+        livro.adicionarCopias(quantidade); // método de instância
         System.out.println(">> Cópias adicionadas.");
         return true;
     }
+
     public boolean removerCopias(Usuario usuarioLogado, Livro livro, int quantidade) {
         if (!(usuarioLogado instanceof Bibliotecario)) {
             System.out.println("Erro: Apenas bibliotecários podem remover cópias.");
@@ -87,8 +88,7 @@ public class LivroController {
             System.out.println("Erro: Quantidade inválida.");
             return false;
         }
-        
-        livro.removerCopias(quantidade); 
+        livro.removerCopias(quantidade); // método de instância
         System.out.println(">> Cópias removidas.");
         return true;
     }
