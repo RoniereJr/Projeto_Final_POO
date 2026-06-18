@@ -1,37 +1,63 @@
 package controllers;
 
 import models.Usuario;
+import java.util.List;
 
+/**
+ * Controller responsável pelo gerenciamento da sessão e autenticação de usuários.
+ */
 public class AutenticacaoController {
 
-    private boolean logado = false;
+    // Armazena a instância do usuário que está atualmente logado no sistema
+    private Usuario usuarioLogado;
 
-    public boolean login(String login, String senha) {
+    /**
+     * Realiza a validação das credenciais e inicia a sessão do usuário.
+     * * @param login Nome de usuário fornecido.
+     * @param senha Senha fornecida.
+     * @return O objeto Usuario correspondente se autenticado com sucesso, ou null em caso de falha.
+     */
+    public Usuario login(String login, String senha) {
+        // Validação preventiva contra entradas nulas ou vazias
         if (login == null || senha == null || login.trim().isEmpty() || senha.trim().isEmpty()) {
             System.out.println("Erro: Login e senha não podem estar vazios.");
-            return false;
+            return null;
         }
 
-        
-        boolean sucesso = Usuario.autenticar(login, senha);
-
-        if (!sucesso) {
-            System.out.println("Erro: Login ou senha incorretos.");
-            this.logado = false;
-            return false;
+        // Invoca o método estático da Model Usuario para checar as credenciais no banco
+        if (!Usuario.autenticar(login, senha)) {
+            System.out.println("Erro: Login/senha incorretos ou conta desativada.");
+            return null;
         }
 
-        this.logado = true;
-        System.out.println(">> Login efetuado com sucesso via Model!");
-        return true;
+        // Se autenticado, percorre a lista de usuários para encontrar o objeto completo e persistir na sessão
+        List<Usuario> usuarios = Usuario.listarUsuarios();
+        for (Usuario u : usuarios) {
+            // Verifica se o login coincide e se a conta do usuário está ativa
+            if (u.getLogin().equals(login) && u.isAtivo()) {
+                this.usuarioLogado = u;
+                System.out.println(">> Login efetuado. Bem-vindo, " + u.getNome() + "!");
+                return u;
+            }
+        }
+        System.out.println("Erro: Usuário não encontrado.");
+        return null;
     }
 
+    /**
+     * Encerra a sessão ativa do usuário atual, limpando a referência.
+     */
     public void logout() {
-        this.logado = false;
-        System.out.println(">> Sessão encerrada.");
+        if (usuarioLogado != null) {
+            System.out.println(">> Sessão encerrada para: " + usuarioLogado.getLogin());
+            usuarioLogado = null; // Remove o usuário da sessão
+        }
     }
 
-    public boolean isLogado() {
-        return logado;
+    /**
+     * Retorna o usuário que está atualmente logado no sistema.
+     */
+    public Usuario getUsuarioLogado() {
+        return usuarioLogado;
     }
 }
