@@ -118,7 +118,7 @@ public class EmprestimoDAO {
         }
 
         LocalDate hoje = LocalDate.now();
-        int diasAtraso = (int) java.time.temporal.ChronoUnit.DAYS.between(dataPrevista, hoje);
+        int diasAtraso = (int) (hoje.toEpochDay() - dataPrevista.toEpochDay());
         if (diasAtraso < 0)
             diasAtraso = 0;
 
