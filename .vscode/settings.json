@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "biblioteca/src/views",
+        "biblioteca/src",
+        "Projeto_Final_POO/src/main/java/views"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
