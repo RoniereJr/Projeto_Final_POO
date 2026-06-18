@@ -6,7 +6,6 @@ package views;
 
 import models.Bibliotecario;
 import models.Cargo;
-import models.Usuario;
 import controllers.BibliotecarioController;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;

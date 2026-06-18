@@ -1,6 +1,5 @@
 package controllers;
 
-
 import models.Usuario;
 import models.Bibliotecario;
 import models.Livro;
@@ -8,13 +7,12 @@ import dao.LivroDAO;
 import java.sql.SQLException;
 import java.util.List;
 
-
 public class LivroController {
 
     private LivroDAO dao = new LivroDAO();
 
     public boolean cadastrarLivro(Usuario usuarioLogado, String isbn, String titulo,
-                                  String autor, int anoPublicacao, int numeroCopias) {
+            String autor, int anoPublicacao, int numeroCopias) {
         if (!(usuarioLogado instanceof Bibliotecario)) {
             System.out.println("Erro: Apenas bibliotecários podem cadastrar livros.");
             return false;
@@ -36,7 +34,7 @@ public class LivroController {
     }
 
     public boolean editarLivro(Usuario usuarioLogado, String isbn, String titulo,
-                               String autor, int anoPublicacao, int numeroCopias, int disponiveis) {
+            String autor, int anoPublicacao, int numeroCopias, int disponiveis) {
         if (!(usuarioLogado instanceof Bibliotecario)) {
             System.out.println("Erro: Apenas bibliotecários podem editar livros.");
             return false;
@@ -45,7 +43,7 @@ public class LivroController {
             System.out.println("Erro: Dados inválidos.");
             return false;
         }
-        
+
         Livro.editarLivro(isbn, titulo, autor, anoPublicacao, numeroCopias, disponiveis);
         System.out.println(">> Livro atualizado.");
         return true;
@@ -74,7 +72,7 @@ public class LivroController {
             System.out.println("Erro: Parâmetros inválidos.");
             return false;
         }
-        livro.adicionarCopias(quantidade); // método de instância
+        livro.adicionarCopias(quantidade);
         System.out.println(">> Cópias adicionadas.");
         return true;
     }
@@ -88,7 +86,7 @@ public class LivroController {
             System.out.println("Erro: Quantidade inválida.");
             return false;
         }
-        livro.removerCopias(quantidade); // método de instância
+        livro.removerCopias(quantidade);
         System.out.println(">> Cópias removidas.");
         return true;
     }

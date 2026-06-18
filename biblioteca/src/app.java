@@ -1,4 +1,4 @@
-import com.formdev.flatlaf.FlatLightLaf; // Importe o tema
+import com.formdev.flatlaf.FlatLightLaf;
 import dao.BibliotecaFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

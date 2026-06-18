@@ -462,7 +462,7 @@ public class EmprestimoView extends javax.swing.JPanel {
         }
         DefaultTableModel modelo = (DefaultTableModel) tabelaEmprestimos.getModel();
         modelo.setRowCount(0);
-        
+
         for (Emprestimo e : emprestimoController.listarEmprestimosAtivosPorMembro(membro)) {
             modelo.addRow(new Object[] {
                     e.getLivro().getIsbn(),

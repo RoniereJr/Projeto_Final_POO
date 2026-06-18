@@ -18,7 +18,7 @@ public class BibliotecarioDAO {
                 rs.getInt("ativo") == 1,
                 Cargo.valueOf(rs.getString("cargo")));
     }
-    
+
     public Bibliotecario criarBibliotecario(String nome, String cpf, String login, String senha, Cargo cargo)
             throws SQLException {
         String sqlU = "INSERT INTO usuarios (cpf, nome, login, senha, ativo) VALUES (?, ?, ?, ?, 1)";

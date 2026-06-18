@@ -79,7 +79,7 @@ public class BibliotecaFactory {
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
-                // Força o carregamento do driver
+
                 Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection(DATABASE_URL);
             } catch (ClassNotFoundException e) {
@@ -96,9 +96,8 @@ public class BibliotecaFactory {
     }
 
     public static void main(String[] args) {
-        BibliotecaFactory factory = BibliotecaFactory.getInstance();
         try {
-            Connection con = factory.getConnection();
+            Connection con = BibliotecaFactory.getConnection();
             System.out.println("Conexão DB estabelecida");
             con.close();
         } catch (SQLException e) {

@@ -39,7 +39,7 @@ public class BibliotecarioController {
             System.out.println("Erro: Apenas SUPERVISORES podem editar bibliotecários.");
             return false;
         }
-        // A Model tem método estático editarBibliotecario (que recebe o objeto)
+
         Bibliotecario.editarBibliotecario(bibliotecario, nome, bibliotecario.getCpf(),
                 login, senha, ativo, cargo);
         System.out.println(">> Bibliotecário editado.");

@@ -36,7 +36,7 @@ public class MembroController {
             System.out.println("Erro: Apenas bibliotecários podem editar membros.");
             return false;
         }
-        
+
         Membro.editarMembro(membro, nome, membro.getCpf(), login, senha, ativo,
                 endereco, telefone, email);
         System.out.println(">> Membro editado.");

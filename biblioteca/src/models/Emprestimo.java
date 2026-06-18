@@ -103,11 +103,6 @@ public class Emprestimo {
         }
         return 0;
     }
-    
-    public static Emprestimo criaEmprestimo(Livro livro, Membro membro){
-        return new Emprestimo(livro, membro);
-        
-    }
 
     public static Emprestimo criarEmprestimo(Livro livro, Membro membro) {
         try {

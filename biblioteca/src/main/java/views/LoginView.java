@@ -14,10 +14,7 @@ import models.Bibliotecario;
 import models.Membro;
 import models.Usuario;
 
-import java.awt.Color;
-
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 public class LoginView extends javax.swing.JFrame {
 
